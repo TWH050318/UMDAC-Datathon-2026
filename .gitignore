@@ -218,3 +218,21 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dataset files
+data/
+*.csv
+*.xlsx
+*.parquet
+
+# Python cache
+__pycache__/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+
+# Secrets and local configuration
+.env
+.env.*

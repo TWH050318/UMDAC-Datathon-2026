@@ -236,3 +236,46 @@ venv/
 # Secrets and local configuration
 .env
 .env.*
+
+# ==========================================
+# UMDAC Datathon 2026 - Project-specific
+# ==========================================
+
+# Original competition data
+data/
+
+# Dataset files
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+
+# Local analytical databases
+*.duckdb
+*.duckdb.wal
+*.db-wal
+
+# Large generated intermediate files
+*.pkl
+*.pickle
+*.joblib
+
+# Python environment and cache
+.venv/
+venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local Power BI temporary files
+*.pbix.autorecovery
+*.pbit.autorecovery
+
+# Operating system files
+.DS_Store
+Thumbs.db

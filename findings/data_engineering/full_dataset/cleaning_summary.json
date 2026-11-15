@@ -1,0 +1,86 @@
+{
+  "input_filename": "swift_umdac_datathon_2026_fictitious_payment_data.csv",
+  "output_filename": "swift_enriched.csv.gz",
+  "input_rows": 10000000,
+  "output_rows": 10000000,
+  "original_columns_preserved": [
+    "DISCLAIMER",
+    "EPOCH_SECONDS",
+    "CURRENCY_CODE",
+    "USD_AMOUNT",
+    "ORDERING_BIC8",
+    "BENEFICIARY_BIC8",
+    "BIC8_PATH",
+    "TOTAL_DURATION",
+    "CONTINUITY_QFLAG",
+    "CURRENCY_CONVERSION_COUNT",
+    "PARTICIPANT_COUNT",
+    "TRANSACTION_TYPE_CODE",
+    "ORDERING_ACCOUNT",
+    "BENEFICIARY_ACCOUNT",
+    "ORDERING_DETAILS",
+    "ORDERING_TOKENS",
+    "BENEFICIARY_DETAILS",
+    "BENEFICIARY_TOKENS",
+    "ORDERING_TYPE",
+    "BENEFICIARY_TYPE",
+    "ANOMALY_TYPE"
+  ],
+  "derived_columns_added": [
+    "SOURCE_ROW_NUMBER",
+    "EPOCH_SECONDS_NUM",
+    "USD_AMOUNT_NUM",
+    "TOTAL_DURATION_NUM",
+    "CURRENCY_CONVERSION_COUNT_NUM",
+    "PARTICIPANT_COUNT_NUM",
+    "UTC_TIMESTAMP",
+    "ROUTE_OBSERVED_BIC_COUNT",
+    "ROUTE_HAS_GAP",
+    "ROUTE_TOKEN_FORMAT_REVIEW",
+    "ROUTE_COUNT_MATCH",
+    "CONTINUITY_FLAG_MATCH",
+    "ANOMALY_LABELLED",
+    "AMOUNT_NONPOSITIVE_REVIEW",
+    "DURATION_NEGATIVE_REVIEW",
+    "FX_COUNT_INVALID_REVIEW",
+    "PARTICIPANT_COUNT_INVALID_REVIEW"
+  ],
+  "review_flags": {
+    "continuity_mismatch": 0,
+    "invalid_numeric_CURRENCY_CONVERSION_COUNT": 0,
+    "invalid_numeric_EPOCH_SECONDS": 0,
+    "invalid_numeric_PARTICIPANT_COUNT": 0,
+    "invalid_numeric_TOTAL_DURATION": 0,
+    "invalid_numeric_USD_AMOUNT": 0,
+    "invalid_timestamp": 0,
+    "labelled_anomaly_records": 7006,
+    "negative_duration_review": 0,
+    "negative_fx_count_review": 0,
+    "nonpositive_participant_count_review": 0,
+    "nonpositive_usd_amount_review": 0,
+    "route_count_mismatch": 0,
+    "route_gap_placeholder": 767204,
+    "route_token_format_review": 0
+  },
+  "category_counts": {
+    "TRANSACTION_TYPE_CODE": {
+      "Direct": 6323280,
+      "Indirect": 3260758,
+      "Covered": 415962
+    },
+    "CONTINUITY_QFLAG": {
+      "Y": 9232796,
+      "N": 767204
+    },
+    "ANOMALY_TYPE": {
+      "<UNLABELLED / BLANK>": 9992994,
+      "ROMANCE_SCAM": 2476,
+      "FAT_FINGER_MISTAKE": 1940,
+      "ACCOUNT_REPLACEMENT_SCAM": 649,
+      "CEO_SCAM": 945,
+      "DUPLICATE_PAYMENT": 679,
+      "CUSTOMER_RECALL": 317
+    }
+  },
+  "method": "Read-only source; zero row deletion, zero deduplication, zero outlier trimming, no imputation; append numeric-as-text and diagnostic fields to compressed CSV"
+}

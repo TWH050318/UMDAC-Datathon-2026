@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "rows_verified": 5000,
+  "row_counts_and_chunk_sizes_match": true,
+  "original_column_order_preserved": true,
+  "missing_original_columns": [],
+  "altered_original_field_values": 0,
+  "source_row_number_errors": 0,
+  "altered_fields_by_column": {}
+}

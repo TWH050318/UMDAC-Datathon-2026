@@ -1,0 +1,40 @@
+INPUT: swift_umdac_datathon_2026_fictitious_payment_data.csv
+TOTAL ROWS: 10,000,000
+
+STRUCTURAL RULE CHECKS:
+participant_count_matches_path: 10,000,000/10,000,000 (100.000%)
+continuity_N_iff_path_has_gap: 10,000,000/10,000,000 (100.000%)
+direct_iff_two_participants: 10,000,000/10,000,000 (100.000%)
+fx_between_zero_and_participants_minus_one: 10,000,000/10,000,000 (100.000%)
+duration_nonnegative: 10,000,000/10,000,000 (100.000%)
+
+ROUTING TYPE COUNTS:
+Direct: 6,323,280
+Indirect: 3,260,758
+Covered: 415,962
+
+MEAN DURATION BY PARTICIPANT COUNT (seconds; may be affected by outliers):
+participants=2: n=6,323,280, mean_duration=663.31
+participants=3: n=2,324,319, mean_duration=840.98
+participants=4: n=855,386, mean_duration=1042.04
+participants=5: n=314,014, mean_duration=1242.21
+participants=6: n=115,701, mean_duration=1436.91
+participants=7: n=42,622, mean_duration=1648.97
+participants=8: n=15,481, mean_duration=1834.23
+participants=9: n=5,758, mean_duration=2023.56
+participants=10: n=2,205, mean_duration=2244.92
+participants=11: n=769, mean_duration=2456.42
+participants=12: n=310, mean_duration=2650.52
+participants=13: n=91, mean_duration=2720.21
+participants=14: n=43, mean_duration=2711.42
+participants=15: n=12, mean_duration=3121.92
+participants=16: n=4, mean_duration=974.25
+participants=17: n=2, mean_duration=3424.00
+participants=19: n=1, mean_duration=3974.00
+participants=21: n=1, mean_duration=21649.00
+participants=22: n=1, mean_duration=8146.00
+
+INTERPRETATION NOTE:
+Perfect matches are consistent with candidate generator rules, but do not prove causality.
+A direct two-participant rule may reflect the documented category definition.
+These charts are exploratory; validate full data, exceptions and alternative explanations.

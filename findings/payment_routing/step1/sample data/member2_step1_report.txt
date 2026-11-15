@@ -1,0 +1,30 @@
+INPUT: swift_sample.csv
+TOTAL ROWS: 5,000
+
+STRUCTURAL RULE CHECKS:
+participant_count_matches_path: 5,000/5,000 (100.000%)
+continuity_N_iff_path_has_gap: 5,000/5,000 (100.000%)
+direct_iff_two_participants: 5,000/5,000 (100.000%)
+fx_between_zero_and_participants_minus_one: 5,000/5,000 (100.000%)
+duration_nonnegative: 5,000/5,000 (100.000%)
+
+ROUTING TYPE COUNTS:
+Direct: 3,232
+Indirect: 1,580
+Covered: 188
+
+MEAN DURATION BY PARTICIPANT COUNT (seconds; may be affected by outliers):
+participants=2: n=3,232, mean_duration=647.23
+participants=3: n=1,146, mean_duration=867.37
+participants=4: n=405, mean_duration=1041.44
+participants=5: n=140, mean_duration=1184.10
+participants=6: n=45, mean_duration=1300.91
+participants=7: n=18, mean_duration=1366.56
+participants=8: n=8, mean_duration=1254.62
+participants=9: n=3, mean_duration=3145.00
+participants=10: n=3, mean_duration=2308.33
+
+INTERPRETATION NOTE:
+Perfect matches are consistent with candidate generator rules, but do not prove causality.
+A direct two-participant rule may reflect the documented category definition.
+These charts are exploratory; validate full data, exceptions and alternative explanations.

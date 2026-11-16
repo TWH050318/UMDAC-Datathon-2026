@@ -1,0 +1,933 @@
+{
+  "source": "swift_enriched.csv.gz",
+  "rows_analyzed": 5000,
+  "invalid_amount": 0,
+  "invalid_timestamp": 0,
+  "currency": [
+    {
+      "group": "EUR",
+      "records": 1585,
+      "total_usd": 119872801.67,
+      "mean_usd": 75629.53
+    },
+    {
+      "group": "USD",
+      "records": 869,
+      "total_usd": 82024165.91,
+      "mean_usd": 94389.14
+    },
+    {
+      "group": "GBP",
+      "records": 439,
+      "total_usd": 20143123.54,
+      "mean_usd": 45884.11
+    },
+    {
+      "group": "CHF",
+      "records": 394,
+      "total_usd": 51770878.43,
+      "mean_usd": 131398.17
+    },
+    {
+      "group": "SGD",
+      "records": 175,
+      "total_usd": 19033495.37,
+      "mean_usd": 108762.83
+    },
+    {
+      "group": "CNY",
+      "records": 162,
+      "total_usd": 3117109.57,
+      "mean_usd": 19241.42
+    },
+    {
+      "group": "HKD",
+      "records": 90,
+      "total_usd": 21339922.23,
+      "mean_usd": 237110.25
+    },
+    {
+      "group": "JPY",
+      "records": 89,
+      "total_usd": 4798434.63,
+      "mean_usd": 53915.0
+    },
+    {
+      "group": "AUD",
+      "records": 79,
+      "total_usd": 17937142.61,
+      "mean_usd": 227052.44
+    },
+    {
+      "group": "AED",
+      "records": 58,
+      "total_usd": 1184070.52,
+      "mean_usd": 20415.01
+    },
+    {
+      "group": "CAD",
+      "records": 56,
+      "total_usd": 1187078.03,
+      "mean_usd": 21197.82
+    },
+    {
+      "group": "KRW",
+      "records": 56,
+      "total_usd": 893292.51,
+      "mean_usd": 15951.65
+    },
+    {
+      "group": "SAR",
+      "records": 48,
+      "total_usd": 1940510.03,
+      "mean_usd": 40427.29
+    },
+    {
+      "group": "QAR",
+      "records": 37,
+      "total_usd": 1253366.21,
+      "mean_usd": 33874.76
+    },
+    {
+      "group": "DKK",
+      "records": 36,
+      "total_usd": 1011951.68,
+      "mean_usd": 28109.77
+    },
+    {
+      "group": "UAH",
+      "records": 36,
+      "total_usd": 64652.56,
+      "mean_usd": 1795.9
+    },
+    {
+      "group": "MYR",
+      "records": 35,
+      "total_usd": 807570.67,
+      "mean_usd": 23073.45
+    },
+    {
+      "group": "RUB",
+      "records": 34,
+      "total_usd": 1204857.15,
+      "mean_usd": 35436.97
+    },
+    {
+      "group": "TRY",
+      "records": 32,
+      "total_usd": 489498.84,
+      "mean_usd": 15296.84
+    },
+    {
+      "group": "INR",
+      "records": 31,
+      "total_usd": 129843.99,
+      "mean_usd": 4188.52
+    },
+    {
+      "group": "PAB",
+      "records": 28,
+      "total_usd": 146876.38,
+      "mean_usd": 5245.59
+    },
+    {
+      "group": "ZAR",
+      "records": 27,
+      "total_usd": 399607.31,
+      "mean_usd": 14800.27
+    },
+    {
+      "group": "ILS",
+      "records": 25,
+      "total_usd": 366742.07,
+      "mean_usd": 14669.68
+    },
+    {
+      "group": "BHD",
+      "records": 25,
+      "total_usd": 823706.42,
+      "mean_usd": 32948.26
+    },
+    {
+      "group": "ARS",
+      "records": 22,
+      "total_usd": 79098.81,
+      "mean_usd": 3595.4
+    },
+    {
+      "group": "RON",
+      "records": 21,
+      "total_usd": 616810.63,
+      "mean_usd": 29371.93
+    },
+    {
+      "group": "KYD",
+      "records": 20,
+      "total_usd": 1147011.44,
+      "mean_usd": 57350.57
+    },
+    {
+      "group": "NZD",
+      "records": 20,
+      "total_usd": 354545.52,
+      "mean_usd": 17727.28
+    },
+    {
+      "group": "XOF",
+      "records": 17,
+      "total_usd": 12221.07,
+      "mean_usd": 718.89
+    },
+    {
+      "group": "BSD",
+      "records": 17,
+      "total_usd": 3473469.74,
+      "mean_usd": 204321.75
+    },
+    {
+      "group": "CLP",
+      "records": 17,
+      "total_usd": 53286.34,
+      "mean_usd": 3134.49
+    },
+    {
+      "group": "CZK",
+      "records": 16,
+      "total_usd": 91755.58,
+      "mean_usd": 5734.72
+    },
+    {
+      "group": "VND",
+      "records": 16,
+      "total_usd": 154801.62,
+      "mean_usd": 9675.1
+    },
+    {
+      "group": "MUR",
+      "records": 16,
+      "total_usd": 25717.9,
+      "mean_usd": 1607.37
+    },
+    {
+      "group": "KZT",
+      "records": 15,
+      "total_usd": 1083027.07,
+      "mean_usd": 72201.8
+    },
+    {
+      "group": "COP",
+      "records": 15,
+      "total_usd": 51959.78,
+      "mean_usd": 3463.99
+    },
+    {
+      "group": "MXN",
+      "records": 14,
+      "total_usd": 22143.51,
+      "mean_usd": 1581.68
+    },
+    {
+      "group": "BBD",
+      "records": 13,
+      "total_usd": 106126.7,
+      "mean_usd": 8163.59
+    },
+    {
+      "group": "ALL",
+      "records": 13,
+      "total_usd": 169673.35,
+      "mean_usd": 13051.8
+    },
+    {
+      "group": "BWP",
+      "records": 13,
+      "total_usd": 62819.69,
+      "mean_usd": 4832.28
+    },
+    {
+      "group": "SEK",
+      "records": 13,
+      "total_usd": 3205261.02,
+      "mean_usd": 246558.54
+    },
+    {
+      "group": "HUF",
+      "records": 13,
+      "total_usd": 395165.98,
+      "mean_usd": 30397.38
+    },
+    {
+      "group": "TWD",
+      "records": 12,
+      "total_usd": 207798.02,
+      "mean_usd": 17316.5
+    },
+    {
+      "group": "PLN",
+      "records": 11,
+      "total_usd": 77357.61,
+      "mean_usd": 7032.51
+    },
+    {
+      "group": "KWD",
+      "records": 11,
+      "total_usd": 204265.18,
+      "mean_usd": 18569.56
+    },
+    {
+      "group": "NOK",
+      "records": 9,
+      "total_usd": 1813741.65,
+      "mean_usd": 201526.85
+    },
+    {
+      "group": "DZD",
+      "records": 7,
+      "total_usd": 19866.71,
+      "mean_usd": 2838.1
+    },
+    {
+      "group": "KHR",
+      "records": 6,
+      "total_usd": 1290.47,
+      "mean_usd": 215.08
+    },
+    {
+      "group": "BAM",
+      "records": 6,
+      "total_usd": 10507.36,
+      "mean_usd": 1751.23
+    },
+    {
+      "group": "XCD",
+      "records": 6,
+      "total_usd": 141661.3,
+      "mean_usd": 23610.22
+    },
+    {
+      "group": "NGN",
+      "records": 6,
+      "total_usd": 3376.2,
+      "mean_usd": 562.7
+    },
+    {
+      "group": "ANG",
+      "records": 6,
+      "total_usd": 58769.14,
+      "mean_usd": 9794.86
+    },
+    {
+      "group": "BRL",
+      "records": 6,
+      "total_usd": 28350.79,
+      "mean_usd": 4725.13
+    },
+    {
+      "group": "BDT",
+      "records": 6,
+      "total_usd": 22863.79,
+      "mean_usd": 3810.63
+    },
+    {
+      "group": "OMR",
+      "records": 5,
+      "total_usd": 59785.5,
+      "mean_usd": 11957.1
+    },
+    {
+      "group": "JOD",
+      "records": 5,
+      "total_usd": 8631.29,
+      "mean_usd": 1726.26
+    },
+    {
+      "group": "THB",
+      "records": 5,
+      "total_usd": 268266.99,
+      "mean_usd": 53653.4
+    },
+    {
+      "group": "LBP",
+      "records": 5,
+      "total_usd": 1491.05,
+      "mean_usd": 298.21
+    },
+    {
+      "group": "BMD",
+      "records": 5,
+      "total_usd": 11216.84,
+      "mean_usd": 2243.37
+    },
+    {
+      "group": "LAK",
+      "records": 5,
+      "total_usd": 15600.49,
+      "mean_usd": 3120.1
+    },
+    {
+      "group": "MOP",
+      "records": 5,
+      "total_usd": 6729.73,
+      "mean_usd": 1345.95
+    },
+    {
+      "group": "MNT",
+      "records": 5,
+      "total_usd": 36017.54,
+      "mean_usd": 7203.51
+    },
+    {
+      "group": "BGN",
+      "records": 5,
+      "total_usd": 83429.17,
+      "mean_usd": 16685.83
+    },
+    {
+      "group": "UZS",
+      "records": 4,
+      "total_usd": 3050.95,
+      "mean_usd": 762.74
+    },
+    {
+      "group": "ISK",
+      "records": 4,
+      "total_usd": 648545.52,
+      "mean_usd": 162136.38
+    },
+    {
+      "group": "AZN",
+      "records": 4,
+      "total_usd": 2422.68,
+      "mean_usd": 605.67
+    },
+    {
+      "group": "LYD",
+      "records": 4,
+      "total_usd": 2138.39,
+      "mean_usd": 534.6
+    },
+    {
+      "group": "PEN",
+      "records": 4,
+      "total_usd": 2645.34,
+      "mean_usd": 661.34
+    },
+    {
+      "group": "MKD",
+      "records": 4,
+      "total_usd": 4663.51,
+      "mean_usd": 1165.88
+    },
+    {
+      "group": "LKR",
+      "records": 4,
+      "total_usd": 2190.89,
+      "mean_usd": 547.72
+    },
+    {
+      "group": "UGX",
+      "records": 4,
+      "total_usd": 3366.94,
+      "mean_usd": 841.74
+    },
+    {
+      "group": "KES",
+      "records": 4,
+      "total_usd": 373.46,
+      "mean_usd": 93.37
+    },
+    {
+      "group": "IQD",
+      "records": 4,
+      "total_usd": 55992.69,
+      "mean_usd": 13998.17
+    },
+    {
+      "group": "DOP",
+      "records": 4,
+      "total_usd": 243662.21,
+      "mean_usd": 60915.55
+    },
+    {
+      "group": "PYG",
+      "records": 3,
+      "total_usd": 4638.16,
+      "mean_usd": 1546.05
+    },
+    {
+      "group": "RWF",
+      "records": 3,
+      "total_usd": 205.38,
+      "mean_usd": 68.46
+    },
+    {
+      "group": "PHP",
+      "records": 3,
+      "total_usd": 2221.29,
+      "mean_usd": 740.43
+    },
+    {
+      "group": "HNL",
+      "records": 3,
+      "total_usd": 17076.13,
+      "mean_usd": 5692.04
+    },
+    {
+      "group": "IDR",
+      "records": 3,
+      "total_usd": 1781.03,
+      "mean_usd": 593.68
+    },
+    {
+      "group": "FJD",
+      "records": 3,
+      "total_usd": 72844.03,
+      "mean_usd": 24281.34
+    },
+    {
+      "group": "AWG",
+      "records": 3,
+      "total_usd": 9585.07,
+      "mean_usd": 3195.02
+    },
+    {
+      "group": "BTN",
+      "records": 3,
+      "total_usd": 1071.54,
+      "mean_usd": 357.18
+    },
+    {
+      "group": "GTQ",
+      "records": 3,
+      "total_usd": 6815.42,
+      "mean_usd": 2271.81
+    },
+    {
+      "group": "XPF",
+      "records": 3,
+      "total_usd": 3243.32,
+      "mean_usd": 1081.11
+    },
+    {
+      "group": "MMK",
+      "records": 2,
+      "total_usd": 498.79,
+      "mean_usd": 249.4
+    },
+    {
+      "group": "UYU",
+      "records": 2,
+      "total_usd": 285669.97,
+      "mean_usd": 142834.98
+    },
+    {
+      "group": "MVR",
+      "records": 2,
+      "total_usd": 7164.6,
+      "mean_usd": 3582.3
+    },
+    {
+      "group": "IRR",
+      "records": 2,
+      "total_usd": 1445.19,
+      "mean_usd": 722.6
+    },
+    {
+      "group": "NAD",
+      "records": 2,
+      "total_usd": 290.84,
+      "mean_usd": 145.42
+    },
+    {
+      "group": "SSP",
+      "records": 2,
+      "total_usd": 1429.09,
+      "mean_usd": 714.54
+    },
+    {
+      "group": "TZS",
+      "records": 2,
+      "total_usd": 4628.85,
+      "mean_usd": 2314.42
+    },
+    {
+      "group": "ZWL",
+      "records": 2,
+      "total_usd": 3401.58,
+      "mean_usd": 1700.79
+    },
+    {
+      "group": "EGP",
+      "records": 2,
+      "total_usd": 34.38,
+      "mean_usd": 17.19
+    },
+    {
+      "group": "RSD",
+      "records": 2,
+      "total_usd": 8049.19,
+      "mean_usd": 4024.6
+    },
+    {
+      "group": "TND",
+      "records": 2,
+      "total_usd": 306.14,
+      "mean_usd": 153.07
+    },
+    {
+      "group": "MAD",
+      "records": 2,
+      "total_usd": 283.44,
+      "mean_usd": 141.72
+    },
+    {
+      "group": "PGK",
+      "records": 2,
+      "total_usd": 2724.16,
+      "mean_usd": 1362.08
+    },
+    {
+      "group": "YER",
+      "records": 2,
+      "total_usd": 1358.17,
+      "mean_usd": 679.09
+    },
+    {
+      "group": "TJS",
+      "records": 1,
+      "total_usd": 52.88,
+      "mean_usd": 52.88
+    },
+    {
+      "group": "PKR",
+      "records": 1,
+      "total_usd": 5.3,
+      "mean_usd": 5.3
+    },
+    {
+      "group": "GYD",
+      "records": 1,
+      "total_usd": 349700.34,
+      "mean_usd": 349700.34
+    },
+    {
+      "group": "BYN",
+      "records": 1,
+      "total_usd": 1369.28,
+      "mean_usd": 1369.28
+    },
+    {
+      "group": "GHS",
+      "records": 1,
+      "total_usd": 1086.75,
+      "mean_usd": 1086.75
+    },
+    {
+      "group": "BND",
+      "records": 1,
+      "total_usd": 850.78,
+      "mean_usd": 850.78
+    },
+    {
+      "group": "AMD",
+      "records": 1,
+      "total_usd": 1705.52,
+      "mean_usd": 1705.52
+    },
+    {
+      "group": "GMD",
+      "records": 1,
+      "total_usd": 2.95,
+      "mean_usd": 2.95
+    },
+    {
+      "group": "TOP",
+      "records": 1,
+      "total_usd": 60.68,
+      "mean_usd": 60.68
+    },
+    {
+      "group": "KGS",
+      "records": 1,
+      "total_usd": 317.5,
+      "mean_usd": 317.5
+    },
+    {
+      "group": "CRC",
+      "records": 1,
+      "total_usd": 1489.23,
+      "mean_usd": 1489.23
+    },
+    {
+      "group": "MZN",
+      "records": 1,
+      "total_usd": 6.51,
+      "mean_usd": 6.51
+    },
+    {
+      "group": "NIO",
+      "records": 1,
+      "total_usd": 470.43,
+      "mean_usd": 470.43
+    },
+    {
+      "group": "JMD",
+      "records": 1,
+      "total_usd": 68.25,
+      "mean_usd": 68.25
+    },
+    {
+      "group": "SHP",
+      "records": 1,
+      "total_usd": 67.25,
+      "mean_usd": 67.25
+    },
+    {
+      "group": "SRD",
+      "records": 1,
+      "total_usd": 699.82,
+      "mean_usd": 699.82
+    },
+    {
+      "group": "SYP",
+      "records": 1,
+      "total_usd": 178.36,
+      "mean_usd": 178.36
+    },
+    {
+      "group": "CDF",
+      "records": 1,
+      "total_usd": 2328.96,
+      "mean_usd": 2328.96
+    },
+    {
+      "group": "DJF",
+      "records": 1,
+      "total_usd": 130.27,
+      "mean_usd": 130.27
+    },
+    {
+      "group": "TTD",
+      "records": 1,
+      "total_usd": 80.24,
+      "mean_usd": 80.24
+    },
+    {
+      "group": "GEL",
+      "records": 1,
+      "total_usd": 109116.25,
+      "mean_usd": 109116.25
+    },
+    {
+      "group": "BOB",
+      "records": 1,
+      "total_usd": 643.9,
+      "mean_usd": 643.9
+    },
+    {
+      "group": "SDG",
+      "records": 1,
+      "total_usd": 22149.81,
+      "mean_usd": 22149.81
+    },
+    {
+      "group": "TMT",
+      "records": 1,
+      "total_usd": 30512.05,
+      "mean_usd": 30512.05
+    }
+  ],
+  "party_combinations": [
+    {
+      "group": "B→C",
+      "records": 2784,
+      "total_usd": 95159120.92,
+      "mean_usd": 34180.72
+    },
+    {
+      "group": "B→B",
+      "records": 1151,
+      "total_usd": 257529945.49,
+      "mean_usd": 223744.52
+    },
+    {
+      "group": "C→C",
+      "records": 785,
+      "total_usd": 4104056.8,
+      "mean_usd": 5228.1
+    },
+    {
+      "group": "C→B",
+      "records": 280,
+      "total_usd": 11262399.34,
+      "mean_usd": 40222.85
+    }
+  ],
+  "amount_bands": [
+    {
+      "group": "1k–9.9k",
+      "records": 1717,
+      "total_usd": 0.0,
+      "mean_usd": 0.0
+    },
+    {
+      "group": "10k–99.9k",
+      "records": 1251,
+      "total_usd": 0.0,
+      "mean_usd": 0.0
+    },
+    {
+      "group": "100–999",
+      "records": 1101,
+      "total_usd": 0.0,
+      "mean_usd": 0.0
+    },
+    {
+      "group": "<100",
+      "records": 430,
+      "total_usd": 0.0,
+      "mean_usd": 0.0
+    },
+    {
+      "group": "100k–999.9k",
+      "records": 429,
+      "total_usd": 0.0,
+      "mean_usd": 0.0
+    },
+    {
+      "group": ">=1m",
+      "records": 72,
+      "total_usd": 0.0,
+      "mean_usd": 0.0
+    }
+  ],
+  "utc_hours": [
+    {
+      "hour": 0,
+      "records": 173
+    },
+    {
+      "hour": 1,
+      "records": 119
+    },
+    {
+      "hour": 2,
+      "records": 115
+    },
+    {
+      "hour": 3,
+      "records": 111
+    },
+    {
+      "hour": 4,
+      "records": 123
+    },
+    {
+      "hour": 5,
+      "records": 165
+    },
+    {
+      "hour": 6,
+      "records": 230
+    },
+    {
+      "hour": 7,
+      "records": 268
+    },
+    {
+      "hour": 8,
+      "records": 244
+    },
+    {
+      "hour": 9,
+      "records": 238
+    },
+    {
+      "hour": 10,
+      "records": 230
+    },
+    {
+      "hour": 11,
+      "records": 217
+    },
+    {
+      "hour": 12,
+      "records": 278
+    },
+    {
+      "hour": 13,
+      "records": 229
+    },
+    {
+      "hour": 14,
+      "records": 237
+    },
+    {
+      "hour": 15,
+      "records": 285
+    },
+    {
+      "hour": 16,
+      "records": 269
+    },
+    {
+      "hour": 17,
+      "records": 252
+    },
+    {
+      "hour": 18,
+      "records": 275
+    },
+    {
+      "hour": 19,
+      "records": 213
+    },
+    {
+      "hour": 20,
+      "records": 191
+    },
+    {
+      "hour": 21,
+      "records": 180
+    },
+    {
+      "hour": 22,
+      "records": 161
+    },
+    {
+      "hour": 23,
+      "records": 197
+    }
+  ],
+  "utc_weekdays": [
+    {
+      "weekday_mon0": 0,
+      "records": 928
+    },
+    {
+      "weekday_mon0": 1,
+      "records": 856
+    },
+    {
+      "weekday_mon0": 2,
+      "records": 837
+    },
+    {
+      "weekday_mon0": 3,
+      "records": 874
+    },
+    {
+      "weekday_mon0": 4,
+      "records": 963
+    },
+    {
+      "weekday_mon0": 5,
+      "records": 198
+    },
+    {
+      "weekday_mon0": 6,
+      "records": 344
+    }
+  ],
+  "interpretation_warning": "These are descriptive aggregates, not reconstructed causal rules. Hours are UTC, not local time. Synthetic traffic may not represent actual economic sizes."
+}

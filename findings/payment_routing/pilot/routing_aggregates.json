@@ -1,0 +1,168 @@
+{
+  "source": "swift_enriched.csv.gz",
+  "rows_analyzed": 5000,
+  "structural_checks": {
+    "gap_routes": 392,
+    "participant_count_mismatch": 0,
+    "continuity_gap_mismatch": 0,
+    "direct_two_participants_mismatch": 0,
+    "fx_bound_mismatch": 0,
+    "observed_start_mismatch": 251,
+    "observed_end_mismatch": 234
+  },
+  "route_types": {
+    "Direct": 3196,
+    "Indirect": 1609,
+    "Covered": 195
+  },
+  "duration_by_participants": [
+    {
+      "group": "2",
+      "records": 3196,
+      "valid_values": 3196,
+      "mean": 634.2206
+    },
+    {
+      "group": "3",
+      "records": 1135,
+      "valid_values": 1135,
+      "mean": 900.4396
+    },
+    {
+      "group": "4",
+      "records": 421,
+      "valid_values": 421,
+      "mean": 1026.38
+    },
+    {
+      "group": "5",
+      "records": 150,
+      "valid_values": 150,
+      "mean": 1216.4267
+    },
+    {
+      "group": "6",
+      "records": 62,
+      "valid_values": 62,
+      "mean": 1436.2581
+    },
+    {
+      "group": "7",
+      "records": 23,
+      "valid_values": 23,
+      "mean": 1141.2609
+    },
+    {
+      "group": "8",
+      "records": 8,
+      "valid_values": 8,
+      "mean": 2352.875
+    },
+    {
+      "group": "10",
+      "records": 4,
+      "valid_values": 4,
+      "mean": 1004.0
+    },
+    {
+      "group": "9",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 885.0
+    }
+  ],
+  "fx_by_participants": [
+    {
+      "group": "2",
+      "records": 3196,
+      "valid_values": 3196,
+      "mean": 0.8517
+    },
+    {
+      "group": "3",
+      "records": 1135,
+      "valid_values": 1135,
+      "mean": 1.6987
+    },
+    {
+      "group": "4",
+      "records": 421,
+      "valid_values": 421,
+      "mean": 2.5582
+    },
+    {
+      "group": "5",
+      "records": 150,
+      "valid_values": 150,
+      "mean": 3.4
+    },
+    {
+      "group": "6",
+      "records": 62,
+      "valid_values": 62,
+      "mean": 4.2097
+    },
+    {
+      "group": "7",
+      "records": 23,
+      "valid_values": 23,
+      "mean": 5.0435
+    },
+    {
+      "group": "8",
+      "records": 8,
+      "valid_values": 8,
+      "mean": 6.5
+    },
+    {
+      "group": "10",
+      "records": 4,
+      "valid_values": 4,
+      "mean": 6.75
+    },
+    {
+      "group": "9",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 8.0
+    }
+  ],
+  "duration_by_type": [
+    {
+      "group": "Direct",
+      "records": 3196,
+      "valid_values": 3196,
+      "mean": 634.2206
+    },
+    {
+      "group": "Indirect",
+      "records": 1609,
+      "valid_values": 1609,
+      "mean": 979.7545
+    },
+    {
+      "group": "Covered",
+      "records": 195,
+      "valid_values": 195,
+      "mean": 1021.359
+    }
+  ],
+  "transaction_type_by_participants": {
+    "Direct | 2": 3196,
+    "Indirect | 3": 1012,
+    "Covered | 6": 7,
+    "Covered | 3": 123,
+    "Indirect | 4": 374,
+    "Indirect | 5": 135,
+    "Covered | 5": 15,
+    "Covered | 4": 47,
+    "Indirect | 7": 22,
+    "Indirect | 6": 55,
+    "Covered | 8": 2,
+    "Indirect | 8": 6,
+    "Indirect | 10": 4,
+    "Covered | 7": 1,
+    "Indirect | 9": 1
+  },
+  "interpretation_warning": "Perfect structural matches do not identify the full hidden generating mechanism. Route endpoints and economic bank-country logic need separate investigation."
+}

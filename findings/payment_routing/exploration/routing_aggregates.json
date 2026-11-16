@@ -1,0 +1,305 @@
+{
+  "source": "swift_enriched.csv.gz",
+  "rows_analyzed": 10000000,
+  "structural_checks": {
+    "gap_routes": 767204,
+    "participant_count_mismatch": 0,
+    "continuity_gap_mismatch": 0,
+    "direct_two_participants_mismatch": 0,
+    "fx_bound_mismatch": 0,
+    "observed_start_mismatch": 498399,
+    "observed_end_mismatch": 499265
+  },
+  "route_types": {
+    "Direct": 6323280,
+    "Indirect": 3260758,
+    "Covered": 415962
+  },
+  "duration_by_participants": [
+    {
+      "group": "2",
+      "records": 6323280,
+      "valid_values": 6323280,
+      "mean": 663.3089
+    },
+    {
+      "group": "3",
+      "records": 2324319,
+      "valid_values": 2324319,
+      "mean": 840.9822
+    },
+    {
+      "group": "4",
+      "records": 855386,
+      "valid_values": 855386,
+      "mean": 1042.0378
+    },
+    {
+      "group": "5",
+      "records": 314014,
+      "valid_values": 314014,
+      "mean": 1242.2068
+    },
+    {
+      "group": "6",
+      "records": 115701,
+      "valid_values": 115701,
+      "mean": 1436.9119
+    },
+    {
+      "group": "7",
+      "records": 42622,
+      "valid_values": 42622,
+      "mean": 1648.9666
+    },
+    {
+      "group": "8",
+      "records": 15481,
+      "valid_values": 15481,
+      "mean": 1834.2275
+    },
+    {
+      "group": "9",
+      "records": 5758,
+      "valid_values": 5758,
+      "mean": 2023.5575
+    },
+    {
+      "group": "10",
+      "records": 2205,
+      "valid_values": 2205,
+      "mean": 2244.9206
+    },
+    {
+      "group": "11",
+      "records": 769,
+      "valid_values": 769,
+      "mean": 2456.4187
+    },
+    {
+      "group": "12",
+      "records": 310,
+      "valid_values": 310,
+      "mean": 2650.5194
+    },
+    {
+      "group": "13",
+      "records": 91,
+      "valid_values": 91,
+      "mean": 2720.2088
+    },
+    {
+      "group": "14",
+      "records": 43,
+      "valid_values": 43,
+      "mean": 2711.4186
+    },
+    {
+      "group": "15",
+      "records": 12,
+      "valid_values": 12,
+      "mean": 3121.9167
+    },
+    {
+      "group": "16",
+      "records": 4,
+      "valid_values": 4,
+      "mean": 974.25
+    },
+    {
+      "group": "17",
+      "records": 2,
+      "valid_values": 2,
+      "mean": 3424.0
+    },
+    {
+      "group": "19",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 3974.0
+    },
+    {
+      "group": "21",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 21649.0
+    },
+    {
+      "group": "22",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 8146.0
+    }
+  ],
+  "fx_by_participants": [
+    {
+      "group": "2",
+      "records": 6323280,
+      "valid_values": 6323280,
+      "mean": 0.8431
+    },
+    {
+      "group": "3",
+      "records": 2324319,
+      "valid_values": 2324319,
+      "mean": 1.7093
+    },
+    {
+      "group": "4",
+      "records": 855386,
+      "valid_values": 855386,
+      "mean": 2.5566
+    },
+    {
+      "group": "5",
+      "records": 314014,
+      "valid_values": 314014,
+      "mean": 3.4067
+    },
+    {
+      "group": "6",
+      "records": 115701,
+      "valid_values": 115701,
+      "mean": 4.2556
+    },
+    {
+      "group": "7",
+      "records": 42622,
+      "valid_values": 42622,
+      "mean": 5.1066
+    },
+    {
+      "group": "8",
+      "records": 15481,
+      "valid_values": 15481,
+      "mean": 5.9483
+    },
+    {
+      "group": "9",
+      "records": 5758,
+      "valid_values": 5758,
+      "mean": 6.8046
+    },
+    {
+      "group": "10",
+      "records": 2205,
+      "valid_values": 2205,
+      "mean": 7.6331
+    },
+    {
+      "group": "11",
+      "records": 769,
+      "valid_values": 769,
+      "mean": 8.5241
+    },
+    {
+      "group": "12",
+      "records": 310,
+      "valid_values": 310,
+      "mean": 9.3774
+    },
+    {
+      "group": "13",
+      "records": 91,
+      "valid_values": 91,
+      "mean": 10.1758
+    },
+    {
+      "group": "14",
+      "records": 43,
+      "valid_values": 43,
+      "mean": 11.1628
+    },
+    {
+      "group": "15",
+      "records": 12,
+      "valid_values": 12,
+      "mean": 12.0
+    },
+    {
+      "group": "16",
+      "records": 4,
+      "valid_values": 4,
+      "mean": 13.25
+    },
+    {
+      "group": "17",
+      "records": 2,
+      "valid_values": 2,
+      "mean": 13.5
+    },
+    {
+      "group": "19",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 16.0
+    },
+    {
+      "group": "21",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 15.0
+    },
+    {
+      "group": "22",
+      "records": 1,
+      "valid_values": 1,
+      "mean": 17.0
+    }
+  ],
+  "duration_by_type": [
+    {
+      "group": "Direct",
+      "records": 6323280,
+      "valid_values": 6323280,
+      "mean": 663.3089
+    },
+    {
+      "group": "Indirect",
+      "records": 3260758,
+      "valid_values": 3260758,
+      "mean": 961.7342
+    },
+    {
+      "group": "Covered",
+      "records": 415962,
+      "valid_values": 415962,
+      "mean": 925.1615
+    }
+  ],
+  "transaction_type_by_participants": {
+    "Direct | 2": 6323280,
+    "Indirect | 3": 2061256,
+    "Covered | 6": 13080,
+    "Covered | 3": 263063,
+    "Indirect | 4": 758816,
+    "Indirect | 5": 278424,
+    "Covered | 5": 35590,
+    "Covered | 4": 96570,
+    "Indirect | 7": 37797,
+    "Indirect | 6": 102621,
+    "Covered | 8": 1770,
+    "Indirect | 8": 13711,
+    "Indirect | 10": 1966,
+    "Covered | 7": 4825,
+    "Indirect | 9": 5073,
+    "Indirect | 11": 677,
+    "Indirect | 14": 35,
+    "Covered | 10": 239,
+    "Indirect | 13": 83,
+    "Indirect | 12": 280,
+    "Covered | 9": 685,
+    "Covered | 13": 8,
+    "Covered | 11": 92,
+    "Covered | 12": 30,
+    "Indirect | 15": 10,
+    "Indirect | 16": 4,
+    "Indirect | 22": 1,
+    "Covered | 14": 8,
+    "Covered | 15": 2,
+    "Indirect | 17": 2,
+    "Indirect | 21": 1,
+    "Indirect | 19": 1
+  },
+  "interpretation_warning": "Perfect structural matches do not identify the full hidden generating mechanism. Route endpoints and economic bank-country logic need separate investigation."
+}

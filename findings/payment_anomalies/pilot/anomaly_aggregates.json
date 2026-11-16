@@ -1,0 +1,72 @@
+{
+  "source": "swift_enriched.csv.gz",
+  "rows_analyzed": 5000,
+  "anomaly_label_counts": {
+    "<UNLABELLED>": 4994,
+    "ROMANCE_SCAM": 5,
+    "FAT_FINGER_MISTAKE": 1
+  },
+  "party_pair_counts": {
+    "B→C": 2784,
+    "B→B": 1151,
+    "C→C": 785,
+    "C→B": 280
+  },
+  "label_by_party_pair": {
+    "<UNLABELLED> | B→C": 2784,
+    "<UNLABELLED> | B→B": 1150,
+    "<UNLABELLED> | C→C": 780,
+    "<UNLABELLED> | C→B": 280,
+    "ROMANCE_SCAM | C→C": 5,
+    "FAT_FINGER_MISTAKE | B→B": 1
+  },
+  "label_by_route_type": {
+    "<UNLABELLED> | Direct": 3190,
+    "<UNLABELLED> | Indirect": 1609,
+    "<UNLABELLED> | Covered": 195,
+    "ROMANCE_SCAM | Direct": 5,
+    "FAT_FINGER_MISTAKE | Direct": 1
+  },
+  "amount_by_label": [
+    {
+      "label": "<UNLABELLED>",
+      "records": 4994,
+      "valid_amounts": 4994,
+      "mean_amount_usd": 73698.97
+    },
+    {
+      "label": "FAT_FINGER_MISTAKE",
+      "records": 1,
+      "valid_amounts": 1,
+      "mean_amount_usd": 889.33
+    },
+    {
+      "label": "ROMANCE_SCAM",
+      "records": 5,
+      "valid_amounts": 5,
+      "mean_amount_usd": 396.93
+    }
+  ],
+  "token_pattern_presence_by_label": {
+    "<UNLABELLED> | ordering | business": 3342,
+    "FAT_FINGER_MISTAKE | ordering | business": 1,
+    "<UNLABELLED> | ordering | person_name": 602,
+    "ROMANCE_SCAM | ordering | person_name": 5,
+    "<UNLABELLED> | ordering | iban": 2515,
+    "FAT_FINGER_MISTAKE | ordering | iban": 1,
+    "<UNLABELLED> | ordering | country_code": 3051,
+    "ROMANCE_SCAM | ordering | country_code": 5,
+    "FAT_FINGER_MISTAKE | ordering | country_code": 1,
+    "<UNLABELLED> | ordering | finance_word": 392,
+    "<UNLABELLED> | beneficiary | business": 1233,
+    "FAT_FINGER_MISTAKE | beneficiary | business": 1,
+    "<UNLABELLED> | beneficiary | person_name": 2069,
+    "<UNLABELLED> | beneficiary | iban": 2533,
+    "FAT_FINGER_MISTAKE | beneficiary | iban": 1,
+    "<UNLABELLED> | beneficiary | country_code": 3008,
+    "ROMANCE_SCAM | beneficiary | country_code": 5,
+    "FAT_FINGER_MISTAKE | beneficiary | country_code": 1,
+    "<UNLABELLED> | beneficiary | finance_word": 392
+  },
+  "interpretation_warning": "Unlabelled does not mean verified legitimate. Labelled-anomaly enrichment samples are intentionally non-representative; do not estimate population rates from them."
+}

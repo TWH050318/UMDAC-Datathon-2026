@@ -1,0 +1,207 @@
+Rows 10,000,000; NORMAL 9,992,994
+
+============================================================================
+  A  Distribution shape of log10(USD_AMOUNT), NORMAL rows
+============================================================================
+pair           n    median $  mean log10  sd log10    skew  ex.kurt    KS D  p10-p90 dex
+B2B    2,269,885   22,883.00      4.3420    0.9924  -0.119    0.082  0.0113        2.546
+B2C    5,600,965    3,117.51      3.4718    0.9919  -0.120    0.085  0.0131        2.564
+C2B      609,762    3,236.31      3.4862    0.9924  -0.117    0.083  0.0128        2.564
+C2C    1,512,382      463.65      2.6328    0.9955  -0.131    0.149  0.0142        2.542
+  (KS p-values are ~0 at this n; the D statistic is the effect size. D<0.02 ~ visually log-normal.)
+
+  Tail check: observed NORMAL rows above threshold vs fitted log-normal expectation
+    B2B >    1e+07: observed  6,268  expected    8,400.8  ratio 0.75
+    B2C >    1e+07: observed    533  expected    1,050.2  ratio 0.51
+    C2B >    1e+07: observed     69  expected      121.6  ratio 0.57
+    C2C >    1e+07: observed      2  expected        8.7  ratio 0.23
+    B2B >    1e+08: observed    124  expected      258.7  ratio 0.48
+    B2C >    1e+08: observed      7  expected       14.0  ratio 0.50
+    C2B >    1e+08: observed      1  expected        1.6  ratio 0.61
+    C2C >    1e+08: observed      0  expected        0.1  ratio 0.00
+    B2B >    1e+09: observed      1  expected        3.0  ratio 0.33
+    B2C >    1e+09: observed      0  expected        0.1  ratio 0.00
+    C2B >    1e+09: observed      0  expected        0.0  ratio 0.00
+    C2C >    1e+09: observed      0  expected        0.0  ratio 0.00
+
+  sd(log10) by pair: B2B=0.992, B2C=0.992, C2B=0.992, C2C=0.996; Levene (200k per pair) W=0.3, p=0.789
+
+============================================================================
+  B  Party-pair multipliers (additive model on log10)
+============================================================================
+  [ALL NORMAL] n=9,992,994
+     medians: B2B=$22,883, B2C=$3,118, C2B=$3,236, C2C=$464
+     B-ordering effect +0.847 dex (x7.04, 95% CI x7.01-x7.06)
+     B-beneficiary effect +0.862 dex (x7.27, 95% CI x7.25-x7.30)
+     interaction +0.017 dex (95% CI +0.014..+0.020)
+     median ratios: B2B/C2C x49.35; B2B/B2C x7.34; B2C/C2C x6.72; C2B/C2C x6.98; B2C/C2B x0.963
+  [USD only] n=1,702,039
+     medians: B2B=$40,218, B2C=$5,228, C2B=$5,000, C2C=$695
+     B-ordering effect +0.891 dex (x7.78, 95% CI x7.71-x7.85)
+     B-beneficiary effect +0.863 dex (x7.30, 95% CI x7.24-x7.37)
+     interaction +0.010 dex (95% CI +0.003..+0.018)
+     median ratios: B2B/C2C x57.86; B2B/B2C x7.69; B2C/C2C x7.52; C2B/C2C x7.19; B2C/C2B x1.046
+  [EUR only] n=3,197,037
+     medians: B2B=$28,002, B2C=$3,812, C2B=$4,049, C2C=$569
+     B-ordering effect +0.842 dex (x6.96, 95% CI x6.91-x7.00)
+     B-beneficiary effect +0.865 dex (x7.32, 95% CI x7.28-x7.37)
+     interaction +0.018 dex (95% CI +0.012..+0.023)
+     median ratios: B2B/C2C x49.23; B2B/B2C x7.35; B2C/C2C x6.70; C2B/C2C x7.12; B2C/C2B x0.941
+  [conversion count == 0] n=1,086,092
+     medians: B2B=$32,248, B2C=$4,526, C2B=$4,595, C2C=$618
+     B-ordering effect +0.850 dex (x7.08, 95% CI x7.00-x7.15)
+     B-beneficiary effect +0.862 dex (x7.28, 95% CI x7.20-x7.36)
+     interaction +0.005 dex (95% CI -0.005..+0.014)
+     median ratios: B2B/C2C x52.17; B2B/B2C x7.13; B2C/C2C x7.32; C2B/C2C x7.43; B2C/C2B x0.985
+  [conversion count > 0] n=8,906,902
+     medians: B2B=$21,869, B2C=$2,991, C2B=$3,090, C2C=$443
+     B-ordering effect +0.847 dex (x7.04, 95% CI x7.01-x7.07)
+     B-beneficiary effect +0.861 dex (x7.26, 95% CI x7.23-x7.29)
+     interaction +0.018 dex (95% CI +0.014..+0.021)
+     median ratios: B2B/C2C x49.31; B2B/B2C x7.31; B2C/C2C x6.74; C2B/C2C x6.97; B2C/C2B x0.968
+
+  B2C vs C2B (sender vs receiver symmetry): MWU p=2.46e-25, rank-biserial=-0.0081
+  Kruskal-Wallis across 4 pairs: H=2,106,183, p=0, epsilon^2=0.2108
+  Medians incl. anomalies: B2B=$22,888, B2C=$3,119, C2B=$3,229, C2C=$463
+
+============================================================================
+  C  Thresholds, caps, floors
+============================================================================
+  NORMAL min $0.01; max $1,395,062,089.32; rows < $1: 11,645
+  Just-below vs just-above 10,000 (width $100): 13,482 vs 13,364 (ratio 1.009; binomial p=0.475); exactly 10,000.00: 35,634
+  -> no structuring dip/bump around the $10,000 reporting cutoff
+
+  Exact repeated USD amounts (NORMAL) - top 12:
+    $   10,000.00   35,634  (0.357%)
+    $    1,000.00   32,609  (0.326%)
+    $    5,000.00   21,703  (0.217%)
+    $  100,000.00   16,988  (0.170%)
+    $      500.00   15,543  (0.156%)
+    $      100.00   13,717  (0.137%)
+    $   50,000.00   13,127  (0.131%)
+    $    2,000.00    5,534  (0.055%)
+    $       50.00    5,195  (0.052%)
+    $   20,000.00    4,552  (0.046%)
+    $    3,000.00    4,382  (0.044%)
+    $    2,500.00    4,250  (0.043%)
+  Normal rows at any amount repeated >= 1000 times: 276,243
+
+============================================================================
+  D  Rounding structure
+============================================================================
+  Whole-dollar share: USD 38.64% (n=1,702,039) vs non-USD 0.99% (n=8,290,955); z=1709; chance for 2-decimal amounts = 1.00%
+  Whole-dollar share by currency (n >= 50,000): EUR=0.9%, USD=38.6%, GBP=1.0%, CHF=1.0%, SGD=1.2%, CNY=1.0%, HKD=1.0%, JPY=0.9%, AUD=1.0%, CAD=1.2%, KRW=0.9%, AED=0.9%, SAR=0.9%, UAH=1.1%, RUB=1.6%, DKK=1.0%, PAB=1.3%, QAR=1.0%, TRY=1.1%, MYR=1.0%, INR=0.9%
+  USD whole-dollar share by conversion count: cc=0: 38.8%, cc=1: 38.6%, cc=2: 38.5%, cc=3: 38.8%
+
+  USD NORMAL: share of amounts that are multiples of 1,000 (>=1,000) by pair and magnitude decade:
+pp     B2B    B2C    C2B    C2C
+dec                            
+3    14.49  12.83  12.74  12.32
+4    15.96  15.32  15.76  16.20
+5    16.46  17.15  16.51  18.08
+6    17.60  19.06  20.57  15.07
+  n per cell:
+pp      B2B     B2C    C2B    C2C
+dec                              
+3     85709  380040  40215  78914
+4    165292  290552  30078  23117
+5    109770   74581   7377   2345
+6     24371    6122    627     73
+    decade 10^3: chi2=214, p=4.47e-46
+    decade 10^4: chi2=40, p=1.02e-08
+    decade 10^5: chi2=18, p=0.000352
+    decade 10^6: chi2=10, p=0.0149
+
+  USD NORMAL overall share multiple of $100 (>=100) / $1,000 (>=1,000): 16.32% / 14.67%
+
+  Reconstructing daily conversion rate from mass points (anchor = most repeated value's decade):
+  Baseline: share of USD NORMAL rows (>=$100) that are in the round set {1,2,2.5,3,4,5,6,7.5,8,10}x10^k: 13.55%
+    EUR: anchor ~1,149.99; daily mode found on 92/93 days, range 1,100.72-1,217.69; rows (>=$100, covered days) n=2,991,648; matches a round local amount at that day's rate: 13.43% | placebo (rate of another day): 0.01% | single constant rate: 0.01%
+    GBP: anchor ~1,311.56; daily mode found on 91/93 days, range 1,196.87-1,367.34; rows (>=$100, covered days) n=810,828; matches a round local amount at that day's rate: 13.39% | placebo (rate of another day): 0.00% | single constant rate: 0.06%
+    CHF: anchor ~1,269.79; daily mode found on 92/93 days, range 1,201.96-1,321.91; rows (>=$100, covered days) n=766,039; matches a round local amount at that day's rate: 13.41% | placebo (rate of another day): 0.00% | single constant rate: 0.02%
+    SGD: anchor ~7,059.27; daily mode found on 92/93 days, range 6,331.70-7,902.23; rows (>=$100, covered days) n=349,427; matches a round local amount at that day's rate: 12.38% | placebo (rate of another day): 0.00% | single constant rate: 0.00%
+    CNY: anchor ~1,473.30; daily mode found on 92/93 days, range 1,429.20-1,529.25; rows (>=$100, covered days) n=278,597; matches a round local amount at that day's rate: 12.83% | placebo (rate of another day): 0.00% | single constant rate: 0.06%
+  EUR daily anchor series: first 1,113.98, last 1,205.07; day-to-day |change| median 6.88 (0.60%); Spearman(date, anchor) = +0.830
+
+============================================================================
+  E  Anomaly labels vs NORMAL (same party_pair)
+============================================================================
+label                     pair        n    median $ x NORMAL-pair     MWU p  rank-bis
+ROMANCE_SCAM              C2B       665      120.77         0.037    2e-165    -0.614
+ROMANCE_SCAM              C2C     1,811      104.65         0.226  2.8e-111    -0.304
+CEO_SCAM                  B2B       262   15,178.25         0.663      0.23    -0.043
+CEO_SCAM                  B2C       683   25,556.02         8.198   2.6e-70     0.392
+ACCOUNT_REPLACEMENT_SCAM  B2B       138   22,385.07         0.978      0.88     0.008
+ACCOUNT_REPLACEMENT_SCAM  B2C       370    3,691.33         1.184      0.14     0.045
+ACCOUNT_REPLACEMENT_SCAM  C2B        34    4,493.78         1.389      0.56     0.057
+ACCOUNT_REPLACEMENT_SCAM  C2C       107      476.02         1.027      0.64    -0.026
+FAT_FINGER_MISTAKE        B2B       4451,966,450.70        85.935   4.6e-68     0.477
+FAT_FINGER_MISTAKE        B2C     1,098  217,740.23        69.844  4.7e-173     0.489
+FAT_FINGER_MISTAKE        C2B       101  113,340.08        35.021   8.7e-14     0.429
+FAT_FINGER_MISTAKE        C2C       296   50,736.51       109.428   1.5e-56     0.532
+DUPLICATE_PAYMENT         B2B       152   13,078.71         0.572     0.021    -0.108
+DUPLICATE_PAYMENT         B2C       393    4,412.57         1.415      0.82     0.007
+DUPLICATE_PAYMENT         C2B        21      990.66         0.306     0.077    -0.223
+DUPLICATE_PAYMENT         C2C       113      213.58         0.461     0.015    -0.132
+CUSTOMER_RECALL           B2B        63   30,026.65         1.312      0.37     0.065
+CUSTOMER_RECALL           B2C       183    3,379.25         1.084      0.53     0.027
+CUSTOMER_RECALL           C2B        22    1,319.58         0.408      0.18    -0.166
+CUSTOMER_RECALL           C2C        49      232.81         0.502       0.3    -0.086
+  Label overall: 
+    ROMANCE_SCAM               n=2,476  median $      109.45  p5 $      0.42  p95 $        8,975.95  whole-dollar 1.3%
+    CEO_SCAM                   n=  945  median $   20,602.13  p5 $     39.27  p95 $    7,628,298.09  whole-dollar 5.8%
+    ACCOUNT_REPLACEMENT_SCAM   n=  649  median $    3,977.30  p5 $     50.32  p95 $      233,404.16  whole-dollar 8.3%
+    FAT_FINGER_MISTAKE         n=1,940  median $  260,241.23  p5 $      7.69  p95 $  256,326,660.14  whole-dollar 13.5%
+    DUPLICATE_PAYMENT          n=  679  median $    2,888.63  p5 $     27.87  p95 $      144,907.37  whole-dollar 7.4%
+    CUSTOMER_RECALL            n=  317  median $    3,163.97  p5 $     55.47  p95 $      365,173.90  whole-dollar 7.6%
+  Scam label x party_pair counts: ROMANCE_SCAM only in C2B,C2C; CEO_SCAM only in B2B,B2C
+
+  FAT_FINGER_MISTAKE scale vs the same ORDERING_ACCOUNT's median NORMAL amount (accounts with >= 3 NORMAL rows):
+    FAT_FINGER n=1,874; NORMAL reference sample n=196,318
+       dex bin    FF %  NORMAL %
+     -4.0..-3.5     0.6       0.0
+     -3.5..-3.0     1.8       0.1
+     -3.0..-2.5     2.9       0.3
+     -2.5..-2.0     5.1       1.3
+     -2.0..-1.5     3.7       3.9
+     -1.5..-1.0     2.9       8.8
+     -1.0..-0.5     3.3      15.1
+     -0.5..+0.0     2.6      19.9
+     +0.0..+0.5     4.0      21.2
+     +0.5..+1.0     6.9      14.6
+     +1.0..+1.5     8.5       8.7
+     +1.5..+2.0     8.9       4.1
+     +2.0..+2.5    10.1       1.5
+     +2.5..+3.0    10.0       0.4
+     +3.0..+3.5     8.9       0.1
+     +3.5..+4.0     7.6       0.0
+     +4.0..+4.5     5.4       0.0
+     +4.5..+5.0     4.1       0.0
+     +5.0..+5.5     1.8       0.0
+     +5.5..+6.0     1.0       0.0
+    median dex FF +1.94 (x86.3) vs NORMAL +0.00; KS D=0.522, p=0
+    share of FF with amount >= 10x own median: 66.1% (NORMAL 14.8%); >= 100x: 48.8% (NORMAL 2.1%); <= 1/10: 17.2% (NORMAL 14.4%); <= 1/100: 10.6% (NORMAL 1.7%)
+
+  DUPLICATE_PAYMENT: other rows with identical (ORDERING_ACCOUNT, BENEFICIARY_ACCOUNT, USD_AMOUNT)?
+                     lab       n  with_twin     pct
+                  NORMAL 9992994       5560   0.056
+            ROMANCE_SCAM    2476         22   0.889
+      FAT_FINGER_MISTAKE    1940          0   0.000
+                CEO_SCAM     945          0   0.000
+       DUPLICATE_PAYMENT     679        679 100.000
+ACCOUNT_REPLACEMENT_SCAM     649          0   0.000
+         CUSTOMER_RECALL     317          0   0.000
+    DUPLICATE_PAYMENT cluster sizes (rows sharing account pair + amount): size 2: 37, size 3: 43, size 4: 49, size 5: 56
+    twins found for 679 of 679 DUPLICATE_PAYMENT rows; twin labels: {'DUPLICATE_PAYMENT': 2040}; |time gap| quantiles (s) 25/50/75/95/max: [884.0, 2145.0, 3581.0, 5538.0, 7043.0]
+
+============================================================================
+  Export CSV and charts (300 DPI)
+============================================================================
+  C:\competition\UM-datathon\project_root\outputs\csv\d2_amount_summary.csv: 112 rows, blocks = ['anomaly_amount', 'dup_cluster_size', 'dup_twin', 'fatfinger_dex', 'fatfinger_summary', 'multiplier', 'rate_reconstruction', 'repeated_amount', 'round1000_by_decade', 'rounding', 'shape', 'tail', 'threshold']
+  saved C:\competition\UM-datathon\project_root\outputs\charts\d2_amount_by_party_pair.png
+  saved C:\competition\UM-datathon\project_root\outputs\charts\d2_rounding_evidence.png
+  exists: True  13,338 bytes
+  exists: True  408,588 bytes
+  exists: True  242,482 bytes
+
+GATE 3 COMPLETE

@@ -1,0 +1,165 @@
+Rows 10,000,000; UTC 2023-04-30 11:22:26 -> 2023-07-31 09:56:01
+Complete 13-week window (Mon 2023-05-01 .. Sun 2023-07-30): 9,991,528 rows (99.92%); excluded partial edge days: 8,472
+
+============================================================================
+  T1  UTC hour-of-day and day-of-week volume
+============================================================================
+  UTC hour share (%): 0:3.1 1:2.6 2:2.3 3:2.2 4:2.2 5:3.1 6:4.9 7:5.0 8:4.7 9:4.7 10:4.4 11:4.3 12:5.6 13:5.0 14:5.0 15:5.9 16:5.7 17:5.5 18:5.1 19:4.2 20:3.7 21:3.6 22:3.3 23:3.8
+  Peak UTC hour 15 (5.86%); trough 3 (2.18%); peak/trough x2.69
+  Chi-square vs uniform hours: chi2=731,003, p=0
+  Mean daily volume by UTC dow: Mon=140,875, Tue=131,422, Wed=131,124, Thu=138,542, Fri=141,054, Sat=33,457, Sun=52,106
+  Weekend/weekday per-day ratio (UTC): 0.313; Sat/Mon 0.237; Sun/Mon 0.370; weekend share of rows 11.13%
+  Weekend share of rows by UTC hour: min 8.0% (hour 6), max 17.9% (hour 0)  [overall 11.1%]
+
+============================================================================
+  T2  Local-clock hypothesis: infer a UTC offset per ordering country
+============================================================================
+  Ordering countries with >= 50,000 rows: 35 (83.5% of rows)
+  ctry          n best off local-wkend % UTC-wkend %                off-2..off+2 curve (%)
+  US    1,580,778       -5         10.01       12.60   10.35 10.22 10.01 10.14 10.50
+  CH      786,045       +1         10.09       10.26   10.35 10.26 10.09 10.23 10.58
+  GB      662,495       +0         10.03       10.03   10.32 10.23 10.03 10.18 10.53
+  FR      538,592       +1         10.00       10.20   10.29 10.20 10.00 10.17 10.54
+  DE      509,210       +1         10.05       10.21   10.28 10.21 10.05 10.19 10.53
+  SG      392,285       +8         10.18       12.18   10.36 10.32 10.18 10.35 10.72
+  CN      341,438       +8         10.22       12.16   10.37 10.34 10.22 10.39 10.73
+  IT      298,504       +1         10.15       10.32   10.40 10.32 10.15 10.31 10.66
+  BE      295,854       +1         10.09       10.27   10.36 10.27 10.09 10.23 10.54
+  LU      290,021       +1          9.90       10.05   10.15 10.05  9.90 10.06 10.41
+  NL      210,559       +1          9.90       10.09   10.17 10.09  9.90 10.00 10.32
+  HK      209,423       +8         10.17       12.13   10.39 10.33 10.17 10.33 10.71
+  JP      192,716       +9         10.45       13.11   10.63 10.59 10.45 10.60 10.98
+  AU      182,480      +11         10.29       14.23   10.45 10.42 10.29 24.43 23.98
+  IM      180,154       +0         10.08       10.08   10.37 10.29 10.08 10.22 10.60
+  FI      153,205       +2         10.09       10.37   10.37 10.26 10.09 10.28 10.71
+  ES      151,515       +1         10.07       10.21   10.29 10.21 10.07 10.25 10.59
+  CA      124,408       -5         10.02       12.57   10.31 10.19 10.02 10.15 10.52
+  KR      119,172       +9         10.36       12.98   10.48 10.44 10.36 10.52 10.87
+  AT      107,066       +1         10.17       10.32   10.40 10.32 10.17 10.26 10.60
+  AE      106,551       +4          9.96       10.29   10.13 10.09  9.96 10.09 10.42
+  SA      102,828       +3         10.13       10.40   10.33 10.27 10.13 10.28 10.61
+  RU       87,932       +3         10.18       10.44   10.35 10.30 10.18 10.34 10.68
+  UA       72,949       +2         10.24       10.51   10.51 10.39 10.24 10.44 10.89
+  IE       69,856       +0         10.04       10.04   10.32 10.20 10.04 10.20 10.60
+  PA       68,026       -5          9.95       12.93   10.26 10.15  9.95 10.08 10.47
+  DK       67,668       +1         10.07       10.26   10.33 10.26 10.07 10.21 10.58
+  QA       65,423       +3          9.88       10.26   10.14 10.05  9.88 10.05 10.45
+  LI       58,548       +1          9.99       10.12   10.22 10.12  9.99 10.18 10.60
+  TR       58,002       +3         10.05       10.35   10.24 10.19 10.05 10.22 10.54
+  MY       56,442       +8         10.17       12.07   10.42 10.36 10.17 10.39 10.80
+  IN       55,974       +5         10.13       10.61   10.28 10.24 10.13 10.15 10.44
+  JE       50,913       +0         10.09       10.09   10.39 10.26 10.09 10.27 10.61
+  AR       50,446       -3          9.94       10.70   10.20 10.12  9.94 10.04 10.34
+  IL       50,367       +2         10.11       10.39   10.39 10.31 10.11 10.31 10.70
+
+  Local-weekend share across countries: 9.88%-10.45% (sd 0.0013); UTC-weekend share: 10.03%-14.23% (sd 0.0117)
+  Pooled local-time analysis uses 8,347,845 rows (83.5%)
+  Pooled LOCAL hour share (%): 0:1.9 1:1.1 2:1.0 3:1.0 4:1.0 5:1.1 6:2.3 7:7.5 8:6.1 9:5.1 10:5.6 11:4.5 12:4.3 13:5.4 14:4.7 15:5.5 16:7.5 17:7.4 18:7.6 19:6.4 20:4.9 21:3.5 22:2.9 23:1.7
+  Local-hour peak 18 (7.64%), trough 4 (0.98%); peak/trough x7.8 (UTC pooled-all: x2.7)
+  Pooled LOCAL dow volume relative to Monday: Mon=1.000, Tue=0.901, Wed=0.901, Thu=0.953, Fri=1.005, Sat=0.190, Sun=0.344
+  Local weekend/weekday per-day ratio: 0.280; Sat/Sun = 0.552; UTC pooled Sat/Sun = 0.642
+  Country local-hour profile vs pooled: min Pearson r = 0.955 (IN); max total-variation distance = 0.055
+  Same comparison on UTC hours: max total-variation distance to the UTC pooled profile = 0.330 (local alignment: 0.055)
+
+  Independent check (hour-profile alignment vs weekend-minimum offset): 35/35 countries agree within 1 hour; 35/35 exactly; median best-fit r = 0.999
+
+  Negative control (cross-border rows, both countries fitted, n=6,514,441): weekend share in ORDERING local time 10.08%; in BENEFICIARY local time 12.10%; in UTC 11.10%
+  Pooled local weekend share 10.08%; per-day weekend factor 0.280 of a weekday
+  Local hour profile weekday vs weekend: chi2=85,560, df=23, p=0, Cramer's V=0.1012
+
+============================================================================
+  T3  Corporate (B) vs Consumer (C) sender schedules
+============================================================================
+  UTC hour x ordering type: chi2=2,567, df=23, p=0, Cramer's V=0.0160
+  B share of rows by UTC hour: min 77.37% (h17), max 79.72% (h8); overall 78.75%
+  UTC dow x ordering type: chi2=26, df=6, p=0.000246, Cramer's V=0.0016
+  Sender B: n=6,586,947; LOCAL weekend share 10.07%; per-day weekend factor 0.280; Sat/Sun 0.553; local-hour peak 16 (7.66%)
+  Sender C: n=1,760,898; LOCAL weekend share 10.09%; per-day weekend factor 0.280; Sat/Sun 0.551; local-hour peak 18 (8.09%)
+  B vs C local weekend share difference: -0.0001 (z = -0.5)
+  Local hour profile B vs C: chi2=5,637, df=23, p=0, Cramer's V=0.0260; max |share diff| = 0.0062
+    B2B: local weekend share 10.08% (n=1,894,480)
+    B2C: local weekend share 10.07% (n=4,692,467)
+    C2B: local weekend share 10.12% (n=502,133)
+    C2C: local weekend share 10.07% (n=1,258,765)
+
+============================================================================
+  T4  Weekly volume levels (complete ISO weeks 18-30)
+============================================================================
+         mean       std     cv    wkend  ratio_we_wk
+wkn                                                 
+18   132572.4  4766.843  0.036  41240.0        0.311
+19    88934.6  3380.991  0.038  27789.5        0.312
+20    88903.0  3553.676  0.040  29330.5        0.330
+21   150810.6  5230.587  0.035  47517.0        0.315
+22   151178.6  5594.753  0.037  46886.0        0.310
+23   133305.4  4787.675  0.036  42152.5        0.316
+24   151228.4  5608.343  0.037  48960.5        0.324
+25   213126.2  7449.709  0.035  66195.0        0.311
+26   168824.4  6355.001  0.038  51376.0        0.304
+27    88794.4  3445.158  0.039  28272.0        0.318
+28   106316.2  3824.640  0.036  34416.0        0.324
+29   133215.0  4579.089  0.034  42754.5        0.321
+30   168633.4  6144.968  0.036  49268.0        0.292
+
+  Levels (weeks within 4% grouped): 6 clusters
+    level    88,877/weekday  x1.000 of lowest  weeks [27, 20, 19]  within-level spread 0.16%
+    level   106,316/weekday  x1.196 of lowest  weeks [28]  within-level spread 0.00%
+    level   133,031/weekday  x1.497 of lowest  weeks [18, 29, 23]  within-level spread 0.55%
+    level   151,073/weekday  x1.700 of lowest  weeks [21, 22, 24]  within-level spread 0.28%
+    level   168,729/weekday  x1.898 of lowest  weeks [30, 26]  within-level spread 0.11%
+    level   213,126/weekday  x2.398 of lowest  weeks [25]  within-level spread 0.00%
+  Between-level spread: lowest 88,794, highest 213,126 (x2.40); weekend/weekday ratio by week: 0.292-0.330; within-week weekday CV median 0.036
+  Composition vs week (Cramer's V; ~0 = unchanged composition):
+    ordering type                  chi2=        12 df=12   p=0.473  V=0.0011
+    party pair                     chi2=        37 df=36   p=0.424  V=0.0011
+    routing type                   chi2=        21 df=24   p=0.622  V=0.0010
+    currency(top8+other)           chi2=       254 df=96   p=2.86e-16  V=0.0018
+    ordering country(top10+other)  chi2=       214 df=120  p=2.6e-07  V=0.0015
+    UTC hour                       chi2=     1,075 df=276  p=9.73e-95  V=0.0030
+  Hour profile lowest-level vs highest-level weeks: V=0.0065
+  Amount by week (NORMAL, 13 groups): KW H=14, epsilon^2=0.00000
+
+============================================================================
+  T5  Minute / second / batch spikes
+============================================================================
+  minute-of-hour: chi2=82.3, df=59, p=0.0242; max/min share 1.6769%/1.6539% (uniform 1.6667%)
+  second-of-minute: chi2=73.8, df=59, p=0.0932; max/min share 1.6774%/1.6537% (uniform 1.6667%)
+  Timestamps on a top of hour: 0.0277% (expected 0.0278% if uniform; ratio 1.00)
+  Timestamps on a 5-min boundary: 0.3307% (expected 0.3333% if uniform; ratio 0.99)
+  Timestamps on a whole minute: 1.6702% (expected 1.6667% if uniform; ratio 1.00)
+  Rows per distinct timestamp-second: max 13, share of rows in seconds with >=2 payments 76.41%
+
+============================================================================
+  T6  Amount, routing type and anomaly labels vs time
+============================================================================
+  log10(amount) by LOCAL hour: KW H=850, epsilon^2=0.00010; by UTC hour: H=11,271, epsilon^2=0.00113
+  Median NORMAL amount by UTC hour: min $2,800 (h4) max $4,357 (h21); ratio x1.56
+  Within ordering_country=US (n=1,579,928): amount by UTC hour KW epsilon^2=0.00008
+  Sender B: median amount weekend $6,639 vs weekday $6,644; MWU p=0.442, rank-biserial -0.0006
+  Sender C: median amount weekend $945 vs weekday $942; MWU p=0.94, rank-biserial +0.0001
+  Routing type x UTC hour: V=0.0137 (p=0); routing type x week: see composition; Direct share by local weekend: 63.22% vs weekday 63.23%
+  Anomaly label timing (local time, fitted countries): weekend share and 6-hour block distribution vs NORMAL
+    ROMANCE_SCAM               n=1,336  weekend 10.0% (NORMAL 10.1%, p=1); 6h-block chi2=9.6 p=0.022
+      6h blocks (00-05/06-11/12-17/18-23) observed % [8.9, 27.2, 34.1, 29.7] vs sender-type-matched NORMAL % [7.2, 30.2, 33.7, 29.0]
+    CEO_SCAM                   n=  786  weekend 12.0% (NORMAL 10.1%, p=0.085); 6h-block chi2=6.3 p=0.096
+      6h blocks (00-05/06-11/12-17/18-23) observed % [7.3, 30.8, 31.8, 30.2] vs sender-type-matched NORMAL % [7.0, 31.4, 35.0, 26.5]
+    ACCOUNT_REPLACEMENT_SCAM   n=  542  weekend 8.7% (NORMAL 10.1%, p=0.32); 6h-block chi2=2.5 p=0.47
+      6h blocks (00-05/06-11/12-17/18-23) observed % [5.9, 29.3, 35.8, 29.0] vs sender-type-matched NORMAL % [7.1, 31.1, 34.7, 27.1]
+    FAT_FINGER_MISTAKE         n=1,595  weekend 10.2% (NORMAL 10.1%, p=0.84); 6h-block chi2=3.7 p=0.3
+      6h blocks (00-05/06-11/12-17/18-23) observed % [6.2, 32.9, 33.8, 27.1] vs sender-type-matched NORMAL % [7.1, 31.2, 34.7, 27.0]
+    DUPLICATE_PAYMENT          n=  563  weekend 10.8% (NORMAL 10.1%, p=0.53); 6h-block chi2=19.7 p=0.00019
+      6h blocks (00-05/06-11/12-17/18-23) observed % [9.1, 22.7, 38.2, 30.0] vs sender-type-matched NORMAL % [7.1, 31.1, 34.7, 27.1]
+    CUSTOMER_RECALL            n=  263  weekend 8.4% (NORMAL 10.1%, p=0.41); 6h-block chi2=4.1 p=0.25
+      6h blocks (00-05/06-11/12-17/18-23) observed % [7.6, 26.2, 34.6, 31.6] vs sender-type-matched NORMAL % [7.1, 31.1, 34.7, 27.1]
+
+============================================================================
+  Export CSV and charts (300 DPI)
+============================================================================
+  C:\competition\UM-datathon\project_root\outputs\csv\d3_temporal_summary.csv: 125 rows; blocks ['amount_time', 'anomaly_timing', 'composition_by_week', 'country_offset', 'local_dow', 'local_hour', 'negative_control', 'offset_crosscheck', 'type_hour_test', 'type_schedule', 'uniformity', 'utc_dow', 'utc_hour', 'weekly_level']
+  saved C:\competition\UM-datathon\project_root\outputs\charts\d3_local_time_structure.png
+  saved C:\competition\UM-datathon\project_root\outputs\charts\d3_weekly_volume_levels.png
+  exists: True  11,196 bytes
+  exists: True  244,533 bytes
+  exists: True  183,702 bytes
+
+GATE 4 COMPLETE

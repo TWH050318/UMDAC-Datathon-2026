@@ -1,0 +1,235 @@
+Rows: 10,000,000
+Verified parquet columns used: see schema in Gate 1
+
+============================================================================
+  H1  Currency frequency distribution
+============================================================================
+Distinct currencies: 155
+  top-1  share: 31.99%
+  top-2  share: 49.02%
+  top-5  share: 69.47%
+  top-10 share: 79.32%
+  top-20 share: 86.63%
+  HHI = 0.1499  (uniform over 155 would be 0.0065; effective #currencies = 6.7)
+  Chi-square vs uniform: chi2 = 222,280,002, df = 154, p = 0
+  Zipf log-log slope all 155: -2.031 (R2 0.804); top-20: -1.494 (R2 0.985)
+  Exponential fit log10(n) ~ rank: slope -0.0196, R2 0.892
+  Top 12:
+    EUR   3,198,639  31.99%
+    USD   1,702,991  17.03%
+    GBP     873,781  8.74%
+    CHF     803,898  8.04%
+    SGD     367,648  3.68%
+    CNY     324,963  3.25%
+    HKD     197,458  1.97%
+    JPY     184,251  1.84%
+    AUD     166,877  1.67%
+    CAD     111,146  1.11%
+    KRW     108,765  1.09%
+    AED      97,143  0.97%
+
+============================================================================
+  H2  Currency mix by party_pair
+============================================================================
+  party_pair x (top10 + OTHER): chi2 = 31,741, df = 30, p = 0, Cramer's V = 0.0325
+  Share of each pair's traffic, top 8 currencies (%):
+party_pair    B2B    B2C    C2B    C2C
+c                                     
+EUR         32.25  31.92  31.95  31.85
+USD         17.86  17.07  16.54  15.83
+GBP          8.70   8.89   8.54   8.32
+CHF          6.67   7.98   8.07  10.29
+SGD          3.71   3.69   3.68   3.59
+CNY          3.50   3.53   2.18   2.26
+HKD          2.08   1.84   2.42   2.12
+JPY          1.94   1.84   1.81   1.70
+  Enrichment (pair share / overall share) with two-proportion z-test vs the other three pairs, |z|>5 only:
+    EUR B2B: share 32.25% vs others 31.91%  ratio 1.011  z = +9.6
+    USD C2B: share 16.54% vs others 17.06%  ratio 0.969  z = -10.5
+    USD C2C: share 15.83% vs others 17.24%  ratio 0.918  z = -42.7
+    USD B2B: share 17.86% vs others 16.79%  ratio 1.064  z = +37.6
+    GBP B2C: share 8.89% vs others 8.55%  ratio 1.039  z = +18.7
+    GBP C2B: share 8.54% vs others 8.75%  ratio 0.976  z = -5.7
+    GBP C2C: share 8.32% vs others 8.81%  ratio 0.945  z = -19.5
+    CHF B2C: share 7.98% vs others 8.11%  ratio 0.984  z = -7.4
+    CHF C2C: share 10.29% vs others 7.64%  ratio 1.347  z = +110.4
+    CHF B2B: share 6.67% vs others 8.44%  ratio 0.791  z = -86.1
+    SGD C2C: share 3.59% vs others 3.69%  ratio 0.973  z = -6.1
+    CNY B2C: share 3.53% vs others 2.89%  ratio 1.220  z = +56.3
+    CNY C2B: share 2.18% vs others 3.32%  ratio 0.656  z = -48.7
+    CNY C2C: share 2.26% vs others 3.43%  ratio 0.661  z = -74.3
+    CNY B2B: share 3.50% vs others 3.17%  ratio 1.104  z = +24.7
+    HKD B2C: share 1.84% vs others 2.14%  ratio 0.859  z = -34.2
+    HKD C2B: share 2.42% vs others 1.95%  ratio 1.246  z = +26.0
+    HKD C2C: share 2.12% vs others 1.95%  ratio 1.089  z = +14.1
+    HKD B2B: share 2.08% vs others 1.94%  ratio 1.073  z = +13.6
+    JPY C2C: share 1.70% vs others 1.87%  ratio 0.912  z = -13.8
+    JPY B2B: share 1.94% vs others 1.81%  ratio 1.069  z = +12.4
+    AUD B2C: share 1.79% vs others 1.51%  ratio 1.186  z = +34.4
+    AUD C2B: share 1.29% vs others 1.69%  ratio 0.761  z = -23.9
+    AUD C2C: share 1.35% vs others 1.73%  ratio 0.779  z = -33.8
+    CAD B2C: share 1.10% vs others 1.13%  ratio 0.969  z = -5.2
+    CAD C2B: share 1.19% vs others 1.11%  ratio 1.077  z = +6.1
+    CAD C2C: share 1.23% vs others 1.09%  ratio 1.125  z = +14.8
+    CAD B2B: share 1.05% vs others 1.13%  ratio 0.930  z = -10.0
+    KRW B2C: share 1.18% vs others 0.97%  ratio 1.210  z = +30.9
+    KRW C2B: share 0.85% vs others 1.10%  ratio 0.771  z = -18.4
+    KRW C2C: share 0.90% vs others 1.12%  ratio 0.803  z = -24.1
+    KRW B2B: share 1.05% vs others 1.10%  ratio 0.961  z = -5.4
+    AED B2C: share 0.99% vs others 0.95%  ratio 1.048  z = +7.3
+    AED C2B: share 0.91% vs others 0.98%  ratio 0.930  z = -5.2
+    AED C2C: share 0.91% vs others 0.98%  ratio 0.924  z = -8.6
+    SAR B2C: share 1.01% vs others 0.93%  ratio 1.088  z = +13.1
+    SAR C2B: share 0.82% vs others 0.98%  ratio 0.833  z = -12.7
+    SAR C2C: share 0.77% vs others 1.01%  ratio 0.762  z = -27.8
+    SAR B2B: share 1.06% vs others 0.95%  ratio 1.122  z = +15.5
+    UAH B2C: share 0.46% vs others 0.98%  ratio 0.469  z = -98.8
+    UAH C2B: share 1.60% vs others 0.63%  ratio 2.531  z = +88.4
+    UAH C2C: share 1.54% vs others 0.54%  ratio 2.868  z = +137.6
+    UAH B2B: share 0.44% vs others 0.76%  ratio 0.581  z = -51.2
+    RUB B2C: share 0.70% vs others 0.59%  ratio 1.170  z = +19.7
+    RUB C2B: share 0.50% vs others 0.66%  ratio 0.760  z = -14.9
+    RUB C2C: share 0.50% vs others 0.68%  ratio 0.745  z = -24.3
+    RUB B2B: share 0.68% vs others 0.64%  ratio 1.057  z = +6.0
+  Currencies (n >= 1000) that never appear in some party_pair: none
+
+============================================================================
+  H3  Currency vs country of ordering / beneficiary bank, hubs and conversion count
+============================================================================
+
+  ordering_country -> modal currency: 182 countries with n>=1000; row-weighted modal-currency match 89.45%
+    countries whose modal currency covers >=50% of their rows: 182 / 182
+ctry cur  pct       tot
+  US USD 90.5 1582415.0
+  CH CHF 88.8  786246.0
+  GB GBP 88.6  662529.0
+  FR EUR 94.0  538746.0
+  DE EUR 94.5  509341.0
+  SG SGD 87.5  393191.0
+  CN CNY 86.2  342194.0
+  IT EUR 93.3  298586.0
+  BE EUR 93.5  295928.0
+  LU EUR 93.7  290106.0
+  NL EUR 93.9  210608.0
+  HK HKD 88.3  209892.0
+  JP JPY 88.3  193331.0
+  AU AUD 83.8  183299.0
+  IM GBP 88.4  180162.0
+
+  beneficiary_country -> modal currency: 170 countries with n>=1000; row-weighted modal-currency match 32.20%
+    countries whose modal currency covers >=50% of their rows: 10 / 170
+ctry cur  pct       tot
+  US EUR 27.6 1924035.0
+  CH EUR 30.1  830356.0
+  GB EUR 29.3  662166.0
+  FR EUR 36.4  561771.0
+  DE EUR 37.8  522715.0
+  SG EUR 30.0  390535.0
+  CN EUR 29.6  346005.0
+  IT EUR 36.4  337216.0
+  BE EUR 37.1  328693.0
+  LU EUR 37.7  294696.0
+  IM EUR 32.1  196496.0
+  NL EUR 38.0  192823.0
+  FI EUR 36.7  177704.0
+  HK EUR 31.1  173818.0
+  JP EUR 33.0  166088.0
+
+  Currency category (mutually exclusive, priority in listed order) by conversion status:
+col_0                       conv==0   conv>0  conv==0 %  conv>0 %
+cat                                                              
+USD/EUR hub (neither home)    16333   218124       1.50      2.45
+beneficiary home only         27843   435232       2.56      4.88
+ordering home only           424108  5763783      39.03     64.66
+ordering+beneficiary home    607390  2149509      55.90     24.12
+other                         10857   346821       1.00      3.89
+  All rows: USD/EUR hub (neither home)=2.34%; beneficiary home only=4.63%; ordering home only=61.88%; ordering+beneficiary home=27.57%; other=3.58%
+
+  P(currency == ordering home | conv==0) = 94.93% ; | conv>0 = 88.78%; chi2 = 38,883, p = 0, phi = 0.062
+  P(currency == beneficiary home | conv==0) = 58.46% ; | conv>0 = 29.00%; chi2 = 385,169, p = 0
+
+  Mean CURRENCY_CONVERSION_COUNT by category:
+                             mean  median    count
+cat                                               
+USD/EUR hub (neither home)  1.550     1.0   234457
+beneficiary home only       1.550     1.0   463075
+ordering home only          1.380     1.0  6187891
+ordering+beneficiary home   1.180     1.0  2756899
+other                       1.554     1.0   357678
+  Kruskal-Wallis conversion count across categories: H = 194,503, p = 0
+
+  EUR share: conv==0 58.44%; conv>0 28.76%
+  USD share: conv==0 25.84%; conv>0 15.96%
+  conv==0 rows where currency != ordering-home currency: 55,033 (5.07% of conv==0)
+  Ordering countries with EUR >= 50% of rows: 27 -> ['FR', 'DE', 'IT', 'BE', 'LU', 'NL', 'FI', 'ES', 'AT', 'IE', 'MC', 'CY', 'MT', 'MQ', 'SI', 'LT', 'PT', 'LV', 'HR', 'GR', 'SK', 'XK', 'SM', 'EE', 'AD', 'ME', 'VA']
+
+============================================================================
+  H4  USD_AMOUNT by currency (Kruskal-Wallis)
+============================================================================
+  Currencies with n >= 1000: 130 of 155
+  NORMAL rows only                               k=130 n= 9,983,470  H=     770,250  p=0  epsilon^2=0.0771
+  ALL rows (anomalies included)                  k=130 n= 9,990,399  H=     772,949  p=0  epsilon^2=0.0774
+  all excl. FAT_FINGER_MISTAKE                   k=130 n= 9,988,464  H=     773,150  p=0  epsilon^2=0.0774
+  Confound check - within party_pair (NORMAL):
+    party_pair=B2B                               k=88  n= 2,243,154  H=     206,906  p=0  epsilon^2=0.0922
+    party_pair=B2C                               k=117 n= 5,585,310  H=     546,847  p=0  epsilon^2=0.0979
+    party_pair=C2B                               k=49  n=   586,324  H=      45,097  p=0  epsilon^2=0.0768
+    party_pair=C2C                               k=68  n= 1,483,898  H=     134,000  p=0  epsilon^2=0.0903
+  Confound check - within conversion status (NORMAL):
+    conv0=False                                  k=130 n= 8,897,473  H=     741,056  p=0  epsilon^2=0.0833
+    conv0=True                                   k=11  n= 1,077,416  H=      10,764  p=0  epsilon^2=0.0100
+  Control: does party_pair alone explain amount? (NORMAL) 
+    party_pair as grouping                       k=4   n= 9,992,994  H=   2,106,183  p=0  epsilon^2=0.2108
+
+  NORMAL median USD_AMOUNT: USD = 6,371.00
+  cur           n      median   x USD   MWU vs USD: p  rank-biserial
+  EUR   3,197,037    4,602.44   0.722               0         -0.078
+  GBP     873,422    3,584.50   0.563               0         -0.128
+  CHF     803,526    6,097.47   0.957       3.19e-101         -0.017
+  SGD     367,461    6,402.25   1.005         0.00145         -0.003
+  CNY     324,396    1,349.01   0.212               0         -0.347
+  HKD     197,371    4,891.31   0.768               0         -0.065
+  JPY     184,136    2,813.61   0.442               0         -0.195
+  AUD     166,788    4,621.38   0.725               0         -0.073
+  CAD     111,069    4,704.99   0.739               0         -0.068
+  KRW     108,718    2,858.71   0.449               0         -0.184
+  AED      97,087    4,205.92   0.660               0         -0.084
+  SAR      97,033    3,312.10   0.520               0         -0.134
+  UAH      68,966      221.89   0.035               0         -0.629
+  RUB      65,059    1,670.73   0.262               0         -0.288
+
+  Across 130 eligible currencies: lowest median 50.79 (YER), highest 9,142.22 (KYD), spread x180.0
+  Lowest 6 / highest 6 medians (NORMAL):
+        n  median_usd
+c                    
+YER  4093       50.79
+NGN  8497       60.42
+RWF  4188       69.16
+SLL  1999       74.73
+SSP  2283       90.96
+SYP  1695       96.57
+           n  median_usd
+c                       
+CHF   803526     6097.47
+NOK    21244     6189.80
+DKK    63361     6270.53
+USD  1702039     6371.00
+SGD   367461     6402.25
+KYD    41505     9142.22
+  Max |median shift| per currency when anomalies are included: 6.91% (TZS); median shift 0.0726%
+
+============================================================================
+  Export summary CSV
+============================================================================
+  Wrote C:\competition\UM-datathon\project_root\outputs\csv\d1_currency_summary.csv  (155 rows x 22 cols)
+
+============================================================================
+  Charts (300 DPI)
+============================================================================
+  saved C:\competition\UM-datathon\project_root\outputs\charts\d1_currency_frequency.png
+  saved C:\competition\UM-datathon\project_root\outputs\charts\d1_currency_median_amount.png
+  exists: True  46,675 bytes  C:\competition\UM-datathon\project_root\outputs\csv\d1_currency_summary.csv
+  exists: True  191,683 bytes  C:\competition\UM-datathon\project_root\outputs\charts\d1_currency_frequency.png
+  exists: True  244,495 bytes  C:\competition\UM-datathon\project_root\outputs\charts\d1_currency_median_amount.png
+
+GATE 2 COMPLETE

@@ -1,3 +1,3 @@
-pair_seen_in_train,n,share_rule_correct,converts_when_area_differs,no_conversion_when_same_area
-True,1893335,1.0,1.0,1.0
-False,109519,0.9952428345766487,0.9951014037627989,1.0
+pair_seen_in_train,n,share_rule_correct,exceptions,converts_when_area_differs,no_conversion_when_same_area
+True,1893335,1.0,0.0,1.0,1.0
+False,109519,0.9952428345766487,521.0,0.9951014037627989,1.0

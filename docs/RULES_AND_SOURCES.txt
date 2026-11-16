@@ -101,10 +101,13 @@ PAGE 2 - DURATION & CONTINUITY
 
 [D1] Duration is decided by the banks on the path, not by the payment. HELD-OUT: the
      average duration of each bank pair, learned on earlier direct payments, explains
-     98.2% of the variance of log10(duration) of later direct payments and predicts 96.6%
-     of them within a factor of 2 (pairs with 5+ training payments; 77% of test payments).
-     A random half/half split inside each pair gives the same (98.2%). Customer type,
-     weekend, hour and amount add almost nothing. (In-sample figure was 98.4%.)
+     98.20% of the variance of log10(duration) of later direct payments and predicts
+     96.59% of them within a factor of 2.
+     COVERAGE: these figures apply only to test payments whose bank pair had 5+ training
+     payments = 1,536,936 payments, 76.7% of the eligible test payments (direct payments
+     with a visible path in the test period). The other 23.3% belong to rare bank pairs
+     and are not scored. A random half/half split inside each pair gives 98.17%.
+     Customer type, weekend, hour and amount add almost nothing. (In-sample: 98.4%.)
                                                             STATUS: SUPPORTED
      CHART: B2_duration_direct_bimodal.png, F1_validation_summary.png
      TABLE: validation_duration_pair_heldout.csv, duration_variance_explained.csv
@@ -121,8 +124,8 @@ PAGE 2 - DURATION & CONTINUITY
 
 [D2] Each bank has its own processing delay and delays add up along the path. HELD-OUT:
      one delay per bank, fitted on earlier 2-bank payments, predicts later 3-bank Indirect
-     payments with log correlation 0.93, but only 61% within a factor of 2 (Covered: 0.83
-     and 50%). The accuracy depends on the banks: paths with a slow bank are predicted
+     payments with log correlation r = 0.932, but only 60.73% within a factor of 2
+     (Covered: r = 0.83 and 49.95%; n = 619,906 and 78,698). The accuracy depends on the banks: paths with a slow bank are predicted
      within a factor of 2 in 100% of cases (184k payments), paths of fast banks only in
      34% (the model over-predicts them about 2x). Median duration rises 39 s -> 126 ->
      418 -> 590 -> 796 s for 2..6 banks.
@@ -153,10 +156,11 @@ PAGE 3 - CURRENCY CONVERSIONS
      1 conversion in 99.7%. For paths of 3-6 banks, CURRENCY_CONVERSION_COUNT equals
      the number of currency-border crossings in 99.5%.
      HELD-OUT (answers the circularity concern): currency areas learned only from earlier
-     direct payments; on later payments the rule is right for 100% of direct payments
-     between country pairs seen in training, 99.5% between pairs NEVER seen in training
-     (109,519 payments), and FX count = area crossings in 99.9% of 3-6-bank paths, which
-     were never used for learning.                         STATUS: SUPPORTED (near-deterministic)
+     direct payments; on later payments the rule is right for 100.00% of direct payments
+     between country pairs seen in training (0 exceptions in 1,893,335), 99.52% between
+     pairs NEVER seen in training (521 exceptions in 109,519), and FX count = area
+     crossings in 99.94% of 3-6-bank paths (1,058,384), which were never used for learning.
+                                                            STATUS: SUPPORTED (near-deterministic)
      CHART: E8_fx_rule.png, F1_validation_summary.png
      TABLE: validation_fx_direct_heldout.csv, validation_fx_paths_heldout.csv, fx_rule_summary.csv
      CODE: 06_validation.ipynb, section 3; 01_routing_duration_fx.ipynb, H-C2 and H-C3

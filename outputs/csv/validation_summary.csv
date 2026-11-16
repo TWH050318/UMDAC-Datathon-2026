@@ -1,9 +1,9 @@
-rule,measure,held_out_value
-Duration: bank-pair mean (direct payments),R² on test payments (pairs with 5+ train payments),0.9819885164138865
-Duration: bank-pair mean (direct payments),share of test payments within a factor of 2,0.9658625993535189
-"Duration: additive bank delays, Indirect 3-bank",log correlation on test,0.9315892531894102
-"Duration: additive bank delays, Indirect 3-bank",share within a factor of 2 on test,0.6072711023929435
-"Duration: additive bank delays, Covered 3-bank",share within a factor of 2 on test,0.4995298482807695
-"FX: direct payments, country pair seen in train",share where rule is correct,1.0
-"FX: direct payments, country pair NOT seen in train",share where rule is correct,0.9952428345766487
-FX: 3-6 bank paths (never used for learning),share where FX count = area crossings,0.9994198702928238
+rule,measure,held_out_value,coverage_of_eligible_test,test_payments,scope
+Duration: bank-pair mean (direct payments),R² on test,0.9819885164138833,0.7673729587878098,1536936,pairs with 5+ training payments
+Duration: bank-pair mean (direct payments),share within a factor of 2,0.9658625993535189,0.7673729587878098,1536936,pairs with 5+ training payments
+"Duration: additive bank delays, Indirect 3-bank",log correlation,0.9315892531893748,,619906,"3-bank Indirect, visible path, all 3 banks estimated"
+"Duration: additive bank delays, Indirect 3-bank",share within a factor of 2,0.6072711023929435,,619906,"3-bank Indirect, visible path, all 3 banks estimated"
+"Duration: additive bank delays, Covered 3-bank",share within a factor of 2,0.4995298482807695,,78698,"3-bank Covered, visible path, all 3 banks estimated"
+"FX: direct payments, country pair seen in training",share where rule is correct,1.0,,1893335,"direct, visible path"
+"FX: direct payments, country pair NOT seen in training",share where rule is correct,0.9952428345766487,,109519,"direct, visible path"
+FX: 3-6-bank paths (never used for learning),FX count = area crossings,0.9994198702928238,,1058384,"3-6 banks, visible path"

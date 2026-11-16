@@ -80,9 +80,9 @@ All figures come from the full 10M rows; each has a cell in the notebook named i
 Rules learned on the first 2/3 of the period (to 28 Jun 2023) and scored on the last 1/3, which they never saw.
 | ID | Question | Held-out result | Status |
 |---|---|---|---|
-| D1v | Is the 98.4% for bank pairs only in-sample fit? | Pair means learned on earlier payments explain 98.2% of the variance of later direct payments; 96.6% within a factor of 2. Random split inside pairs: 98.2% | D1 confirmed |
+| D1v | Is the 98.4% for bank pairs only in-sample fit? | Pair means learned on earlier payments explain 98.20% of the variance of later direct payments; 96.59% within a factor of 2. Coverage: only pairs with 5+ training payments = 76.7% of eligible test payments. Random split inside pairs: 98.17% | D1 confirmed |
 | D2v | How accurate is the additive bank-delay model? | Log correlation 0.93 but 61% within a factor of 2 (Covered 50%). Paths with a slow bank: 100% within a factor of 2; fast banks only: 34% (over-predicted about 2×) | D2 holds for slow banks; fast-bank delays Open |
-| R8v | Is the FX rule circular (areas inferred and tested on the same payments)? | Areas learned on earlier direct payments: rule correct for 100% of later payments between pairs seen in training, 99.5% between pairs never seen, and 99.9% of 3–6-bank paths never used for learning | R8 confirmed |
+| R8v | Is the FX rule circular (areas inferred and tested on the same payments)? | Areas learned on earlier direct payments: rule correct for 100.00% of later payments between pairs seen in training (0 exceptions), 99.52% between pairs never seen (521 exceptions in 109,519), and 99.94% of 3–6-bank paths never used for learning | R8 confirmed |
 | N11r | CUSTOMER_RECALL wording | Changed from "assigned at random" to "no distinguishing rule identified with the tested features"; randomness is not proven | Negative result |
 
 ## Not yet explained (be upfront about these)

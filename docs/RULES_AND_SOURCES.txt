@@ -2,13 +2,21 @@ UMDAC DATATHON 2026 - SWIFT PAYMENTS
 RECONSTRUCTED RULES, WITH CHART AND CODE SOURCES
 ==================================================================
 Instructions / How to read this file
-- Each rule represents a relational statement that can be added directly to a dashboard (phrased in English for easy copy-pasting).
-- STATUS: PROVEN = Valid across 100% of the dataset; SUPPORTED = Backed by quantitative evidence with alternative explanations ruled out;
-OPEN = A pattern has been observed, but the underlying mechanism remains undetermined; REJECTED = Proven invalid upon testing (must still be reported).
-- CHART = A visualization located in `outputs/charts/`; TABLE = An aggregated dataset in `outputs/csv/` (suitable as a data source for Power BI);
-CODE = A specific notebook and section heading within the `notebooks/` directory. "(no chart)" indicates that only a table is available.
-- All figures are calculated based on the full dataset of 10,000,000 rows, unless a specific scope is otherwise stated.
+- Each rule = A relational statement that can be added directly to a dashboard (written in English for easy copy-pasting).
+- STATUS: PROVEN = Valid for 100% of the full dataset; SUPPORTED = Backed by quantitative evidence, with alternative explanations ruled out;
+OPEN = A pattern has been observed, but the underlying mechanism remains undetermined; REJECTED = Proven invalid upon testing (these are also reported).
+- CHART = A chart located in `outputs/charts/`; TABLE = An aggregated table in `outputs/csv/` (used as a data source for Power BI); 
+CODE = A notebook and specific section heading within `notebooks/`. "(no chart)" indicates that only a table is available.
+- All figures are calculated based on the full dataset of 10,000,000 rows, unless a specific scope is stated. Every notebook
+terminates at the import stage unless the dataset contains exactly 10,000,000 rows (see `data_issues_log #11`).
+- "Unlabelled" = The `ANOMALY_TYPE` field is empty. Since the case study treats labelling as optional,
+"unlabelled" payments are simply those with no recorded anomaly—they are not necessarily verified as legitimate.
+- HELD-OUT = A rule derived from the first two-thirds of the time period (up to June 28, 2023) and then evaluated
+against the final one-third—data the rule had not previously encountered (see `notebooks/06_validation.ipynb`).
 - The suggested dashboard page is indicated in the group heading.
+- WHY (interpretation) = Our interpretation of "why this occurs in the real world"—this is an inference, not a direct data output.
+ALTERNATIVE = An alternative explanation that was considered, along with the reasoning for its exclusion. NOTE = Discrepancies with real-world conditions or additional validation steps. 
+Explanations are based solely on general banking knowledge; no external data sources were used.
 
 ==================================================================
 PAGE 1 - PAYMENT ROUTING
@@ -17,11 +25,16 @@ PAGE 1 - PAYMENT ROUTING
      Size/scope: 10,000,000 of 10,000,000 rows.            STATUS: PROVEN
      CHART: (no chart)   TABLE: dq_consistency_checks.csv
      CODE: 00_data_quality.ipynb, section 5; 01_routing_duration_fx.ipynb, H-A1
+     WHY (interpretation): Bookkeeping, not behaviour: the count is derived from the
+       path, so it carries no information of its own.
 
 [R2] TRANSACTION_TYPE_CODE is "Direct" if and only if the path has exactly 2 banks.
      Size/scope: all rows, 0 exceptions.                    STATUS: PROVEN
      CHART: (no chart)   TABLE: (shown in notebook)
      CODE: 01_routing_duration_fx.ipynb, H-A1
+     WHY (interpretation): A direct payment means the two banks hold an account
+       relationship with each other and need no intermediary. The label is a definition
+       applied to the path.
 
 [R3] Path length is geometric: each additional bank keeps 36.8% of the payments
      (ratio 0.363-0.372 for 2 to 9 banks), in every customer flow and for domestic
@@ -29,12 +42,26 @@ PAGE 1 - PAYMENT ROUTING
      this is the intended parameter.                        STATUS: SUPPORTED
      CHART: A2_participant_count_geometric.png   TABLE: routing_participant_count.csv
      CODE: 01_routing_duration_fx.ipynb, H-A2
+     WHY (interpretation): Banks without a direct relationship pass a payment through
+       correspondent banks. If, at every step, there is the same chance that one more
+       intermediary is needed, path lengths follow exactly this memoryless (geometric)
+       law.
+     ALTERNATIVE: Longer chains for cross-border than domestic payments (distance drives
+       intermediaries). Rejected: the ratio is the same for both.
+     NOTE: Real domestic payments rarely travel through chains of correspondents, so
+       applying one ratio everywhere looks like a simplification of the generator.
 
 [R4] With 3 or more banks, a payment is "Covered" with a fixed probability that does
      not depend on path length or amount: 20% if domestic, 10.6% if cross-border
      (otherwise "Indirect").                                STATUS: SUPPORTED
      CHART: E10_covered_share.png   TABLE: routing_covered_by_k_domestic.csv, routing_covered_share.csv
      CODE: 05_completion.ipynb, section E; 01_routing_duration_fx.ipynb, H-A3
+     WHY (interpretation): In a cover payment the customer instruction goes straight to
+       the beneficiary's bank while the funds settle separately through correspondents.
+       Twice the share for domestic payments fits banks of one country messaging each
+       other directly and settling through a shared correspondent.
+     ALTERNATIVE: Cover is used for large amounts. Rejected: the share is flat across
+       amounts.
 
 [R7] Each end of the path is replaced by a random bank in 5% of payments,
      independently (first 4.98%, last 4.99%, both 0.247% vs 0.249% expected).
@@ -45,6 +72,13 @@ PAGE 1 - PAYMENT ROUTING
      (3.9 vs 7.3 per 10,000) - not explained.               STATUS: SUPPORTED (meaning OPEN)
      CHART: (no chart)   TABLE: endpoint_mismatch.csv
      CODE: 05_completion.ipynb, section C; 01_routing_duration_fx.ipynb, H-A4
+     WHY (interpretation): Our reading: the bank that holds the customer's account is
+       not always the bank that sends or receives the message - smaller banks reach the
+       network through another institution, and groups route through a central entity.
+     ALTERNATIVE: A data error. Unlikely: the rate is exactly 5% at each end and the two
+       ends are independent, which looks designed.
+     NOTE: This is the least certain interpretation in the file; the replacement bank is
+       usually in another country, which a sponsor-bank story does not fully explain.
 
 ==================================================================
 PAGE 2 - DURATION & CONTINUITY
@@ -53,34 +87,62 @@ PAGE 2 - DURATION & CONTINUITY
      Size/scope: all rows, 0 exceptions.                    STATUS: PROVEN
      CHART: (no chart)   TABLE: dq_consistency_checks.csv
      CODE: 00_data_quality.ipynb, section 5
+     WHY (interpretation): Definition: the flag restates whether the path has a gap.
 
 [R6] Each link of a path is hidden independently with probability 5%, so the share of
      discontinuous paths is 1 - 0.95^(k-1) for k banks (observed 5.0%, 9.7%, 14.2%,
      18.5%, 22.5% for k = 2..6; model within 0.1 point).    STATUS: SUPPORTED
      CHART: B1_gap_model.png   TABLE: continuity_gap_model.csv
      CODE: 01_routing_duration_fx.ipynb, H-B1
+     WHY (interpretation): Not every leg of a payment is visible to the network: a bank
+       may not report, or a leg may be settled outside the tracked channel. If each leg
+       is missed independently, longer paths are proportionally more likely to show a
+       gap - which is what the data does.
 
-[D1] Duration is decided by the banks on the path, not by the payment. For direct
-     payments the pair of banks explains 98.4% of the variance of log10(duration)
-     (32,734 bank pairs with 30+ payments). Customer type, weekend, hour and amount
-     add almost nothing.                                    STATUS: SUPPORTED
-     CHART: B2_duration_direct_bimodal.png   TABLE: duration_variance_explained.csv
-     CODE: 04_open_questions.ipynb, section 1 (H1); 01_routing_duration_fx.ipynb, H-B2
+[D1] Duration is decided by the banks on the path, not by the payment. HELD-OUT: the
+     average duration of each bank pair, learned on earlier direct payments, explains
+     98.2% of the variance of log10(duration) of later direct payments and predicts 96.6%
+     of them within a factor of 2 (pairs with 5+ training payments; 77% of test payments).
+     A random half/half split inside each pair gives the same (98.2%). Customer type,
+     weekend, hour and amount add almost nothing. (In-sample figure was 98.4%.)
+                                                            STATUS: SUPPORTED
+     CHART: B2_duration_direct_bimodal.png, F1_validation_summary.png
+     TABLE: validation_duration_pair_heldout.csv, duration_variance_explained.csv
+     CODE: 06_validation.ipynb, section 1; 04_open_questions.ipynb, section 1 (H1)
+     WHY (interpretation): Processing time is an operational property of a bank:
+       automated straight-through processing takes seconds, manual handling and batch
+       runs take minutes to an hour. A payment inherits the speed of the banks that
+       touch it.
+     ALTERNATIVE: Delays come from business hours and cut-off times, or from compliance
+       checks on large amounts. Rejected: the slow share barely changes with hour,
+       weekend or amount.
+     NOTE: In reality cut-off times and weekends do delay payments; their absence here
+       is a simplification.
 
-[D2] Each bank has its own processing delay and delays add up along the path: delays
-     fitted on 2-bank payments predict 3-bank Indirect payments with correlation 0.93
-     (log scale); median duration rises 39 s -> 126 -> 418 -> 590 -> 796 s for 2..6 banks.
-     Estimates for fast banks are imprecise; Covered payments fit less well (0.83).
-                                                            STATUS: SUPPORTED (fast banks / Covered OPEN)
-     CHART: D1_duration_additive_validation.png, B2_duration_by_participants.png
-     TABLE: duration_additive_validation.csv, duration_by_participants.csv
-     CODE: 04_open_questions.ipynb, section 1 (H2); 01_routing_duration_fx.ipynb, H-B2
+[D2] Each bank has its own processing delay and delays add up along the path. HELD-OUT:
+     one delay per bank, fitted on earlier 2-bank payments, predicts later 3-bank Indirect
+     payments with log correlation 0.93, but only 61% within a factor of 2 (Covered: 0.83
+     and 50%). The accuracy depends on the banks: paths with a slow bank are predicted
+     within a factor of 2 in 100% of cases (184k payments), paths of fast banks only in
+     34% (the model over-predicts them about 2x). Median duration rises 39 s -> 126 ->
+     418 -> 590 -> 796 s for 2..6 banks.
+                                                            STATUS: SUPPORTED for slow banks; fast banks and Covered OPEN
+     CHART: D1_duration_additive_validation.png, B2_duration_by_participants.png, F1_validation_summary.png
+     TABLE: validation_duration_additive_heldout.csv, duration_by_participants.csv
+     CODE: 06_validation.ipynb, section 2; 04_open_questions.ipynb, section 1 (H2)
+     WHY (interpretation): Banks handle a payment one after another, so their processing
+       times accumulate along the chain.
+     NOTE: Check: this predicts that a given pair of banks is consistently fast or
+       consistently slow, whatever the payment - observed (D1).
 
 [D3] Large banks are fast: among banks with 300+ direct payments, only 0.5% of the
      largest eighth are slow (delay over 150 s) against 50-55% in every other size group.
                                                             STATUS: SUPPORTED
      CHART: D1_bank_delay_distribution.png   TABLE: bank_delay_by_size.csv
      CODE: 04_open_questions.ipynb, section 1 (H3)
+     WHY (interpretation): Large banks handle the volume that justifies investment in
+       real-time processing, and correspondent business depends on speed; small banks
+       more often process manually or in batches.
 
 ==================================================================
 PAGE 3 - CURRENCY CONVERSIONS
@@ -89,17 +151,38 @@ PAGE 3 - CURRENCY CONVERSIONS
      payments: all 1,608 large country pairs convert either never or always; same
      currency area -> 0 conversions in 927,261 of 927,261 payments; different area ->
      1 conversion in 99.7%. For paths of 3-6 banks, CURRENCY_CONVERSION_COUNT equals
-     the number of currency-border crossings in 99.5%.      STATUS: SUPPORTED (near-deterministic)
-     CHART: E8_fx_rule.png   TABLE: fx_rule_summary.csv, fx_direct_border.csv
-     CODE: 01_routing_duration_fx.ipynb, H-C2 and H-C3; chart in 05_completion.ipynb, section E
+     the number of currency-border crossings in 99.5%.
+     HELD-OUT (answers the circularity concern): currency areas learned only from earlier
+     direct payments; on later payments the rule is right for 100% of direct payments
+     between country pairs seen in training, 99.5% between pairs NEVER seen in training
+     (109,519 payments), and FX count = area crossings in 99.9% of 3-6-bank paths, which
+     were never used for learning.                         STATUS: SUPPORTED (near-deterministic)
+     CHART: E8_fx_rule.png, F1_validation_summary.png
+     TABLE: validation_fx_direct_heldout.csv, validation_fx_paths_heldout.csv, fx_rule_summary.csv
+     CODE: 06_validation.ipynb, section 3; 01_routing_duration_fx.ipynb, H-C2 and H-C3
      Note: the chart's middle bar is defined by the pair never converting; the evidence
      is that no pair lies in between.
+     WHY (interpretation): A conversion is needed only when a payment moves between
+       banks that keep their accounts in different currencies. Inside a monetary union,
+       or between countries using the same currency, nothing has to be exchanged.
+     ALTERNATIVE: Conversion depends on the payment currency versus the receiver's
+       currency (one conversion per payment). Rejected: the count follows the path, link
+       by link.
+     NOTE: Real payments are usually converted once; several conversions along one chain
+       look like a generator simplification.
 
-[R9] Currency areas recovered from the data alone: euro area (19 country codes incl.
-     AD, MC, MQ), US dollar area (US, PR, EC, VG, BQ), sterling (GB, IM, JE),
-     Swiss franc (CH, LI).                                  STATUS: SUPPORTED
+[R9] Currency areas recovered from the data alone (training period, country pairs with
+     100+ payments): euro area 25 codes (AD AT BE CY DE EE ES FI FR GR HR IE IT LT LU LV
+     MC MQ MT NL PT SI SK SM XK), US dollar 8 (US PR EC SV VG BQ GU TL), sterling 4
+     (GB GG IM JE), Swiss franc 2 (CH LI). With the stricter 500-payment threshold of
+     notebook 01 the same areas appear, only smaller.      STATUS: SUPPORTED
      CHART: (no chart)   TABLE: (printed in notebook)
-     CODE: 01_routing_duration_fx.ipynb, H-C2
+     CODE: 06_validation.ipynb, section 3; 01_routing_duration_fx.ipynb, H-C2
+     WHY (interpretation): The recovered areas correspond to real currency arrangements:
+       the euro area including Kosovo and San Marino, which use the euro; dollarised
+       economies such as Ecuador, El Salvador and Timor-Leste; Crown Dependencies using
+       sterling; Switzerland and Liechtenstein. The generator therefore encodes real
+       currency geography even though country sizes were randomised.
 
 ==================================================================
 PAGE 4 - PAYMENT AMOUNTS
@@ -108,6 +191,8 @@ PAGE 4 - PAYMENT AMOUNTS
      0.99; within one currency 0.92).                       STATUS: SUPPORTED
      CHART: A1_amount_by_flow.png   TABLE: amount_by_flow.csv
      CODE: 02_currency_amount_time.ipynb, H-A1
+     WHY (interpretation): Sizes that result from many multiplicative factors (income,
+       firm size, prices) are typically log-normal; payment values are a textbook case.
 
 [A2] Each business party multiplies the typical amount by about 7.2, additively on the
      log scale (medians: C2C 464, B2C 3,118, C2B 3,236, B2B 22,883 USD; interaction
@@ -115,12 +200,22 @@ PAGE 4 - PAYMENT AMOUNTS
      a currency-mix artefact.                               STATUS: SUPPORTED
      CHART: A1_amount_by_flow.png   TABLE: amount_by_flow.csv
      CODE: 02_currency_amount_time.ipynb, H-A1 (incl. per-currency check)
+     WHY (interpretation): Businesses move invoices, supplier payments and payroll;
+       individuals move remittances and purchases. A business on either side raises the
+       ticket size, and with businesses on both sides the two effects multiply.
+     ALTERNATIVE: Businesses simply use higher-value currencies. Rejected: the effect is
+       the same inside every currency.
 
 [A5] Round amounts are chosen in the payment currency: 38.6% of USD payments are whole
      dollars vs 1.0% of other currencies, the same in all four flows. Most common:
      10,000 / 1,000 / 5,000 / 100,000 / 500.                STATUS: SUPPORTED
      CHART: E11_round_amounts.png   TABLE: amount_roundness.csv
      CODE: 02_currency_amount_time.ipynb, H-A2; chart in 05_completion.ipynb, section E
+     WHY (interpretation): People and firms agree prices in round numbers of the
+       currency they pay in. Converting to USD destroys the roundness, so it survives
+       only where the payment currency is USD.
+     NOTE: The share is identical for consumers and businesses; in reality one would
+       expect them to differ, so this looks like a single generator parameter.
 
 ==================================================================
 PAGE 5 - CURRENCY PATTERNS
@@ -132,6 +227,12 @@ PAGE 5 - CURRENCY PATTERNS
                                                             STATUS: SUPPORTED (remaining 13% OPEN)
      CHART: E9_currency_choice.png   TABLE: currency_choice_rule.csv, country_home_currency.csv
      CODE: 02_currency_amount_time.ipynb, H-B2; chart in 05_completion.ipynb, section E
+     WHY (interpretation): The sender's account is held in its home currency, so paying
+       in that currency avoids a conversion on the sender's side; USD and EUR appear as
+       vehicle currencies when neither party's currency is convenient.
+     ALTERNATIVE: Dominant-currency invoicing: most cross-border trade is priced in USD.
+       Not what the data shows - only 3.6% use a vehicle currency - so the dataset
+       departs from that real-world pattern.
 
 [A4] Each currency has its own amount level: medians from about 145 USD (XOF) to about
      9,100 USD (KYD) among the 40 most used currencies. More heavily used currencies
@@ -139,6 +240,11 @@ PAGE 5 - CURRENCY PATTERNS
      is not identified.                                     STATUS: SUPPORTED (driver OPEN)
      CHART: B1_median_by_currency.png   TABLE: currency_overview.csv
      CODE: 02_currency_amount_time.ipynb, H-B1
+     WHY (interpretation): Our reading: a currency's typical ticket reflects who uses it
+       - financial-centre and reserve currencies carry larger commercial payments,
+       currencies of lower-income economies carry smaller ones.
+     NOTE: Weakly supported (correlation with volume 0.46). The case study warns that
+       country sizes are randomised, so we do not push this further.
 
 ==================================================================
 PAGE 6 - TEMPORAL PATTERNS
@@ -150,6 +256,12 @@ PAGE 6 - TEMPORAL PATTERNS
      CHART: E7_weekend_local_vs_utc.png, C1_day_of_week.png
      TABLE: time_weekend_local_vs_utc.csv, time_day_of_week.csv
      CODE: 05_completion.ipynb, section D; 02_currency_amount_time.ipynb, H-C1
+     WHY (interpretation): Banks and firms work a five-day week. Friday is the busiest
+       day as invoices and payroll are settled before the weekend.
+     ALTERNATIVE: Why Sunday is busier than Saturday: countries with a Friday-Saturday
+       weekend, or payments queued on Sunday for Monday. We could not test either.
+     NOTE: Consumers fall on weekends exactly as much as businesses; in reality consumer
+       activity is less tied to the business week.
 
 [T2] Activity follows the sender's local clock with one common daily shape: after
      shifting each country by its estimated offset, the hourly curves of JP, SG, DE,
@@ -157,11 +269,19 @@ PAGE 6 - TEMPORAL PATTERNS
      volume per night hour).                                STATUS: SUPPORTED
      CHART: C2_local_time_alignment.png   TABLE: time_country_centre_hour.csv
      CODE: 02_currency_amount_time.ipynb, H-C2
+     WHY (interpretation): Payments are initiated during local working hours: a sharp
+       start when offices open, a late-afternoon peak before end-of-day cut-off, and
+       almost nothing at night.
+     NOTE: Check: this predicts the same curve in every country once clocks are aligned
+       - observed for JP, SG, DE, GB and US.
 
 [T3] Business and consumer senders have different daily shapes.
      Result: nearly identical (largest gap 0.7 point per hour, GB).   STATUS: REJECTED
      CHART: (no chart)   TABLE: (shown in notebook)
      CODE: 02_currency_amount_time.ipynb, H-C2 (last table)
+     WHY (interpretation): We expected consumers to pay in the evening and businesses in
+       office hours. The data gives both the same clock, so the generator uses one daily
+       profile.
 
 ==================================================================
 PAGE 7 - CUSTOMERS, ACCOUNTS & GEOGRAPHY
@@ -171,11 +291,19 @@ PAGE 7 - CUSTOMERS, ACCOUNTS & GEOGRAPHY
                                                             STATUS: SUPPORTED
      CHART: E13_flow_mix.png   TABLE: party_flow_mix.csv
      CODE: 03_parties_anomalies.ipynb, H-A1; chart in 05_completion.ipynb, section E
+     WHY (interpretation): Cross-border payments are mostly initiated by firms (79%),
+       while most receivers are individuals (71%): payouts, salaries, refunds and
+       remittances.
+     NOTE: Independence means a business is no more likely to pay a business than a
+       consumer is. Real trade is more assortative, so this is a simplification.
 
 [P3] Account format is set by the bank's country: every country with 20,000+ payments
      is either all IBAN-style or not at all.                STATUS: PROVEN
      CHART: (no chart)   TABLE: (shown in notebook)
      CODE: 03_parties_anomalies.ipynb, H-A3
+     WHY (interpretation): The IBAN is a national standard: a country adopts it for all
+       its banks and customers at once, so the format depends on the country and never
+       on the customer.
 
 [P7] An IBAN-style account is built as country code + 2 check digits + 4-digit bank
      code + filler + 9-digit customer number; the bank code equals the first 4
@@ -183,6 +311,8 @@ PAGE 7 - CUSTOMERS, ACCOUNTS & GEOGRAPHY
      sides, 5.4 million accounts' payments each).           STATUS: PROVEN
      CHART: (no chart)   TABLE: (shown in notebook)
      CODE: 05_completion.ipynb, H-A1
+     WHY (interpretation): An IBAN embeds the bank identifier so that a payment can be
+       routed from the account number alone; the generator reproduces that design.
 
 [P8] The customer number identifies the party, not the account. Senders have exactly
      one account each (94,549 = 94,549). Receivers are paid at several banks: 781,150
@@ -193,24 +323,42 @@ PAGE 7 - CUSTOMERS, ACCOUNTS & GEOGRAPHY
                                                             STATUS: SUPPORTED
      CHART: (no chart)   TABLE: entity_counts.csv, entity_accounts_per_receiver.csv
      CODE: 05_completion.ipynb, H-A2
+     WHY (interpretation): Our reading: receivers are people and firms with accounts in
+       several countries (migrants, expatriates, firms banking abroad), living at one
+       address.
+     ALTERNATIVE: A generator shortcut: the receiver's bank is drawn again for each
+       payment, independently of who the receiver is. We think this is likely: 34% of
+       receivers have two or more accounts, and 63% of those with five or more payments
+       are paid in more than one country, more than seems realistic.
 
 [P9] Payment relationships repeat between parties: 39.7% of payments are in a repeating
      sender-receiver relationship when measured by customer number, against 26.0% when
      measured by account pair. (Same scope as P8.)          STATUS: SUPPORTED
      CHART: (no chart)   TABLE: entity_repeat_relationships.csv
      CODE: 05_completion.ipynb, H-A3
+     WHY (interpretation): Economic relationships recur: the same suppliers, employees
+       and family members are paid again and again.
 
 [P10] Senders prefer receivers whose customer number is close to their own: 12.0% of
      payments go to a receiver within 1,000 numbers, 3.6 times the 3.4% expected if
      receivers were assigned at random. (Same scope as P8.) STATUS: SUPPORTED
      CHART: E1_entity_proximity.png   TABLE: entity_proximity.csv
      CODE: 05_completion.ipynb, H-A4
+     WHY (interpretation): Our reading: customers with nearby numbers were created
+       together and form a community (same region, industry or family), and trade is
+       concentrated inside communities.
+     ALTERNATIVE: An artefact of how numbers are assigned (for example by country), with
+       receivers chosen by country. Not tested, so the 'community' reading stays an
+       interpretation.
 
 [P4] Party details reveal the party type: <business> and <company_keyword> tokens occur
      only for businesses (85% and 26%), <first_name>/<last_name> only for consumers
      (57% and 86%); address tokens are shared.              STATUS: PROVEN (one direction)
      CHART: E14_token_types.png   TABLE: party_token_types.csv
      CODE: 05_completion.ipynb, section E; 03_parties_anomalies.ipynb, H-A4
+     WHY (interpretation): Names follow legal conventions: firms carry company keywords
+       and legal forms, individuals carry given and family names; both have postal
+       addresses.
 
 [G2] Sender activity is heavy-tailed: the top 1% of sender accounts send 46% of all
      payments, the top 0.1% send 18%; 905 of the 1,000 most active are businesses.
@@ -218,16 +366,23 @@ PAGE 7 - CUSTOMERS, ACCOUNTS & GEOGRAPHY
      creates the MQ->TN corridor.                           STATUS: SUPPORTED
      CHART: E12_sender_concentration.png   TABLE: party_sender_concentration.csv
      CODE: 05_completion.ipynb, section E; 04_open_questions.ipynb, section 2
+     WHY (interpretation): Payment volume is concentrated in a few large corporates and
+       payout or remittance providers that pay thousands of counterparties; one such hub
+       in MQ creates a whole corridor.
 
 ==================================================================
 PAGE 8 - ANOMALY PATTERNS
 ==================================================================
 [N0] 7,006 of 10,000,000 payments carry an anomaly label (0.07%): romance scam 2,476,
      fat-finger 1,940, CEO scam 945, duplicate 679, account replacement 649, and
-     CUSTOMER_RECALL 317 (a label not described in the case study).
+     CUSTOMER_RECALL 317 (a label not described in the case study). Labelling is optional
+     in the case study, so the other 9,992,994 rows are unlabelled (no recorded anomaly),
+     not verified legitimate; all comparisons below are against unlabelled payments.
                                                             STATUS: PROVEN (counts)
      CHART: E5_anomaly_overview.png   TABLE: anomaly_overview.csv
      CODE: 03_parties_anomalies.ipynb, section B overview; chart in 05_completion.ipynb, section B
+     WHY (interpretation): Fraud and errors are rare events in payment traffic; the
+       generator injects them at well under one in a thousand.
 
 [N3] Romance scam: one consumer pays one receiver 2 to 8 times; each payment is about
      1.5 times the previous one, about 3.6 minutes apart (median episode 18 minutes,
@@ -235,46 +390,70 @@ PAGE 8 - ANOMALY PATTERNS
      no earlier history.                                    STATUS: SUPPORTED
      CHART: B3_romance_escalation.png   TABLE: anomaly_romance_escalation.csv
      CODE: 03_parties_anomalies.ipynb, H-B3
+     WHY (interpretation): A victim who believes in a relationship is asked for a small
+       sum first; each success is followed by a larger request, so amounts escalate.
+       Sender and receiver are private individuals with no earlier link.
+     NOTE: In reality this unfolds over weeks or months; minutes between payments is a
+       compressed version.
 
 [N4] CEO scam: a business pays a receiver it has never paid (99.8%) about 3.2 times its
      usual amount (+0.50 log units).                        STATUS: SUPPORTED
      CHART: E3_scam_amount_vs_usual.png   TABLE: anomaly_amount_vs_sender_usual.csv
      CODE: 05_completion.ipynb, H-B3; 03_parties_anomalies.ipynb, H-B4
+     WHY (interpretation): Business email compromise: a forged instruction from a senior
+       manager, with urgency and secrecy, makes finance staff send an unusually large
+       one-off payment to a beneficiary the firm has never paid.
 
 [N5] Account replacement scam: a payment of the sender's usual size (+0.04 log units)
      to a receiver never paid before (100%); occurs in all four flows.
                                                             STATUS: SUPPORTED
      CHART: E3_scam_amount_vs_usual.png   TABLE: anomaly_amount_vs_sender_usual.csv
      CODE: 05_completion.ipynb, H-B3; 03_parties_anomalies.ipynb, H-B4
+     WHY (interpretation): Invoice redirection: the invoice is genuine, so the amount is
+       ordinary; only the destination account has been swapped.
 
 [N6] Account replacement keeps a known supplier's name on a new account.
      Result: the scam payment's beneficiary details overlap with the sender's known
-     payees in 0.5% of cases, less than normal payments do (18%). Two different tests
+     payees in 0.5% of cases, less than unlabelled payments do (18%). Two different tests
      gave the same answer.                                  STATUS: REJECTED
      CHART: (no chart)   TABLE: anomaly_name_match.csv
      CODE: 05_completion.ipynb, H-B2; 03_parties_anomalies.ipynb, H-B4
+     WHY (interpretation): In a real invoice fraud the supplier's name stays on the
+       payment. Here the receiver is a different party altogether, so a name-versus-
+       account check would not expose these cases in this dataset.
+     NOTE: The dataset departs from the textbook description of this fraud.
 
 [N10] Fraud receivers are strangers: a receiver within 1,000 customer numbers of the
      sender occurs in 0% of account-replacement, 1.5% of CEO-scam and 3.8% of
-     romance-scam payments, against 12.0% of normal payments. Mistakes (fat-finger
-     12.0%) look like normal payments. (Scope as P8; 132 / 206 / 236 scam rows.)
+     romance-scam payments, against 12.0% of unlabelled payments. Mistakes (fat-finger
+     12.0%) look like unlabelled payments. (Scope as P8; 132 / 206 / 236 scam rows.)
                                                             STATUS: SUPPORTED
      CHART: E2_anomaly_proximity.png   TABLE: anomaly_proximity.csv
      CODE: 05_completion.ipynb, H-B1
+     WHY (interpretation): Fraudsters come from outside the victim's business and social
+       circle, whereas mistakes happen inside ordinary relationships. This separates
+       fraud from error better than amount does.
 
 [D4] Scams are slow because fraud receivers bank with slow banks: the beneficiary bank
      is slow for 44% of romance-scam, 41% of CEO-scam and 40% of account-replacement
-     payments against 17% of normal ones.                   STATUS: SUPPORTED
+     payments against 17% of unlabelled ones.                   STATUS: SUPPORTED
      CHART: E6_anomaly_slow_banks.png   TABLE: anomaly_bank_speed.csv
      CODE: 04_open_questions.ipynb, section 1 (H4); chart in 05_completion.ipynb, section B
+     WHY (interpretation): Mule accounts tend to be opened at smaller institutions,
+       which are also the slow ones (D3).
+     ALTERNATIVE: Banks hold suspicious payments for checks. Rejected: once the banks
+       are known, scam payments take the predicted time.
 
 [N9] Fat-finger mistake: the decimal separator is moved, in either direction. USD
-     fat-finger amounts end in .00 in 77.5% of cases (normal USD: 38.6%); against the
+     fat-finger amounts end in .00 in 77.5% of cases (unlabelled USD: 38.6%); against the
      sender's usual level 67% are more than 10 times too large and 17% more than 10
      times too small. The number of places moved is not identified.
                                                             STATUS: SUPPORTED (places OPEN)
      CHART: D4_fat_finger_vs_sender_usual.png, B1_fat_finger_shift.png   TABLE: (shown in notebook)
      CODE: 04_open_questions.ipynb, section 4; 03_parties_anomalies.ipynb, H-B1
+     WHY (interpretation): A keying error: the decimal separator is typed in the wrong
+       place or misread (comma and point have opposite meanings across countries),
+       changing the amount by whole powers of ten.
 
 [N2] Duplicate payment: 185 groups of 2 to 5 identical payments (same accounts, amount,
      currency and path; 37 / 43 / 49 / 56 groups of size 2 / 3 / 4 / 5), all within 2 hours
@@ -282,18 +461,27 @@ PAGE 8 - ANOMALY PATTERNS
      included.                                              STATUS: SUPPORTED
      CHART: E4_duplicates.png   TABLE: anomaly_duplicate_group_sizes.csv
      CODE: 05_completion.ipynb, H-B4; 03_parties_anomalies.ipynb, H-B2
+     WHY (interpretation): A back-office system submits the same instruction again
+       before the first is confirmed, or two people pay the same bill; copies appear
+       before reconciliation catches them, hence within hours.
 
-[N11] CUSTOMER_RECALL cannot be reconstructed from the row: recalled payments match
-     normal ones on amount, parties, routing, duration and timing, and have no twin
-     payment. We conclude the label is assigned at random to about 32 payments per
-     million.                                               STATUS: NEGATIVE RESULT
+[N11] No distinguishing generating rule was identified for CUSTOMER_RECALL with the
+     tested features: recalled payments match unlabelled ones on amount, parties,
+     routing, duration and timing, and none has an identical twin payment (about 32
+     labels per million). This does not prove the label is random; it may depend on
+     something the row does not record.                    STATUS: NEGATIVE RESULT
      CHART: (no chart)   TABLE: anomaly_customer_recall_vs_normal.csv
      CODE: 05_completion.ipynb, H-B5
+     WHY (interpretation): A recall is a customer asking the bank to cancel after
+       sending. The reason usually lies outside the payment itself, so the row may carry
+       no trace of it, which would fit what we found.
 
 [N8] Anomalies cluster on weekends or at night.
-     Result: weekend share 9.8-12.9% vs 11.2% normal.       STATUS: REJECTED
+     Result: weekend share 9.8-12.9% vs 11.2% unlabelled.       STATUS: REJECTED
      CHART: (no chart)   TABLE: anomaly_timing_routing.csv
      CODE: 03_parties_anomalies.ipynb, "Timing of anomalies"
+     WHY (interpretation): We expected fraud to concentrate before weekends and at
+       night, when recalls are slow. The data shows no such timing.
 
 ==================================================================
 STILL OPEN (state these on the slides)

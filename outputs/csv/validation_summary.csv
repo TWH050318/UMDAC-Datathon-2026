@@ -1,0 +1,9 @@
+rule,measure,held_out_value
+Duration: bank-pair mean (direct payments),R² on test payments (pairs with 5+ train payments),0.9819885164138865
+Duration: bank-pair mean (direct payments),share of test payments within a factor of 2,0.9658625993535189
+"Duration: additive bank delays, Indirect 3-bank",log correlation on test,0.9315892531894102
+"Duration: additive bank delays, Indirect 3-bank",share within a factor of 2 on test,0.6072711023929435
+"Duration: additive bank delays, Covered 3-bank",share within a factor of 2 on test,0.4995298482807695
+"FX: direct payments, country pair seen in train",share where rule is correct,1.0
+"FX: direct payments, country pair NOT seen in train",share where rule is correct,0.9952428345766487
+FX: 3-6 bank paths (never used for learning),share where FX count = area crossings,0.9994198702928238

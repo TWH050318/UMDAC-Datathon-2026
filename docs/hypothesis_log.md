@@ -71,10 +71,19 @@ All figures come from the full 10M rows; each has a cell in the notebook named i
 | P10 | Senders prefer receivers with nearby customer numbers | 12.0% within 1,000 numbers vs 3.4% if random (3.6×) | Supported |
 | N10 | Fraud receivers are outside the sender's neighbourhood | Within 1,000 numbers: account replacement 0%, CEO 1.5%, romance 3.8% vs 12.0% normal | Supported |
 | N6b | Account replacement reuses a known payee's name (second test, word overlap) | 0.5% of scams reach an overlap of 0.6 vs 18% of normal payments | Rejected |
-| N11 | CUSTOMER_RECALL has a generating condition visible in the row | Matches normal payments on every column; no twin payment | Negative result: label looks random (about 32 per million) |
+| N11 | CUSTOMER_RECALL has a generating condition visible in the row | Matches unlabelled payments on every tested column; no twin payment | Negative result: no rule identified (see N11r) |
 | R4b | Covered share depends on domestic vs cross-border only | 20.0% domestic, 10.6% cross-border, flat across 3–7 banks and across amounts | Supported |
 | R7b | Endpoint mismatch replaces the path's end bank; the BIC column stays the real bank | IBAN country and bank code still match the BIC column in 100% of mismatch rows; anomalies are half as frequent there (3.9 vs 7.3 per 10,000) | Supported; the anomaly gap Open |
 | T1b | Weekend effect in estimated local time | Saturday 21%, Sunday 35% of weekday level; Friday +6%, Tue/Wed −4% | Supported |
+
+## Fourth pass (16 Nov) — peer-review fixes. Evidence: `notebooks/06_validation.ipynb`
+Rules learned on the first 2/3 of the period (to 28 Jun 2023) and scored on the last 1/3, which they never saw.
+| ID | Question | Held-out result | Status |
+|---|---|---|---|
+| D1v | Is the 98.4% for bank pairs only in-sample fit? | Pair means learned on earlier payments explain 98.2% of the variance of later direct payments; 96.6% within a factor of 2. Random split inside pairs: 98.2% | D1 confirmed |
+| D2v | How accurate is the additive bank-delay model? | Log correlation 0.93 but 61% within a factor of 2 (Covered 50%). Paths with a slow bank: 100% within a factor of 2; fast banks only: 34% (over-predicted about 2×) | D2 holds for slow banks; fast-bank delays Open |
+| R8v | Is the FX rule circular (areas inferred and tested on the same payments)? | Areas learned on earlier direct payments: rule correct for 100% of later payments between pairs seen in training, 99.5% between pairs never seen, and 99.9% of 3–6-bank paths never used for learning | R8 confirmed |
+| N11r | CUSTOMER_RECALL wording | Changed from "assigned at random" to "no distinguishing rule identified with the tested features"; randomness is not proven | Negative result |
 
 ## Not yet explained (be upfront about these)
 1. Exact per-bank delay of fast banks; how `Covered` payments combine delays (D2).

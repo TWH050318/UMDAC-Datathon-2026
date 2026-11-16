@@ -39,6 +39,10 @@ COLUMNS = {
 def main():
     t0 = time.time()
     con = connect()
+    # Start from an empty folder so no file from an earlier run (or any stray file) is ever read again.
+    if RAW_DIR.exists():
+        for old in RAW_DIR.glob("*.parquet"):
+            old.unlink()
     con.execute("SET preserve_insertion_order=true")
     RAW_DIR.parent.mkdir(parents=True, exist_ok=True)
     cols = ", ".join(f"'{k}': '{v}'" for k, v in COLUMNS.items())
@@ -49,8 +53,8 @@ def main():
             SELECT row_number() OVER () - 1 AS ROW_ID, {keep}
             FROM read_csv('{RAW_CSV.as_posix()}', header=true, columns={{{cols}}},
                           quote='"', escape='"', parallel=false)
-        ) TO '{RAW_DIR.as_posix()}' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 200000,
-             FILE_SIZE_BYTES '300MB', OVERWRITE_OR_IGNORE)
+        ) TO '{RAW_DIR.as_posix()}' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 50000,
+             FILE_SIZE_BYTES '18MB', OVERWRITE)
         """
     )
     n = con.execute(f"SELECT count(*) FROM '{RAW_PARQUET}'").fetchone()[0]

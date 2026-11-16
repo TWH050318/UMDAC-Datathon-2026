@@ -17,6 +17,19 @@ from config import CHARTS, CSV_OUT, FEATURES_PARQUET, RAW_PARQUET, connect
 con = connect()
 con.execute(f"CREATE OR REPLACE VIEW f AS SELECT * FROM '{FEATURES_PARQUET}'")
 con.execute(f"CREATE OR REPLACE VIEW p AS SELECT * FROM '{RAW_PARQUET}'")
+
+# Integrity check: stop immediately if the Parquet folders do not hold exactly the official dataset.
+# (A stray extra file in a data folder once added 400,000 duplicated rows; this check makes that impossible to miss.)
+EXPECTED_ROWS = 10_000_000
+for _view in ("f", "p"):
+    # count(*) and min/max are read from Parquet metadata, so this check takes about a second.
+    _n, _lo, _hi = con.execute(f"SELECT count(*), min(ROW_ID), max(ROW_ID) FROM {_view}").fetchone()
+    if (_n, _lo, _hi) != (EXPECTED_ROWS, 0, EXPECTED_ROWS - 1):
+        raise RuntimeError(
+            f"Data integrity check failed for view '{_view}': {_n:,} rows, ROW_ID from {_lo} to {_hi} "
+            f"(expected {EXPECTED_ROWS:,} rows, ROW_ID 0 to {EXPECTED_ROWS - 1:,}). Remove any extra .parquet files from the data folders "
+            f"or rebuild with src/01_build_parquet.py and src/02_build_features.py."
+        )
 pd.set_option("display.width", 200, "display.max_columns", 40, "display.max_rows", 200)
 plt.rcParams.update({"figure.dpi": 110, "axes.spines.top": False, "axes.spines.right": False,
                      "axes.titlesize": 11, "axes.titleweight": "bold", "axes.titlelocation": "left"})

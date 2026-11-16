@@ -66,14 +66,18 @@ COPY (
         nullif(regexp_extract_all(ORDERING_TOKENS,    '<country_code:([A-Z]{{2}})>', 1)[-1], '') AS ORD_DETAILS_COUNTRY,
         nullif(regexp_extract_all(BENEFICIARY_TOKENS, '<country_code:([A-Z]{{2}})>', 1)[-1], '') AS BEN_DETAILS_COUNTRY
     FROM base
-) TO '{FEATURES_DIR.as_posix()}' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 500000,
-     FILE_SIZE_BYTES '300MB', OVERWRITE_OR_IGNORE)
+) TO '{FEATURES_DIR.as_posix()}' (FORMAT PARQUET, COMPRESSION ZSTD, ROW_GROUP_SIZE 100000,
+     FILE_SIZE_BYTES '18MB', OVERWRITE)
 """
 
 
 def main():
     t0 = time.time()
     con = connect()
+    # Start from an empty folder so no file from an earlier run (or any stray file) is ever read again.
+    if FEATURES_DIR.exists():
+        for old in FEATURES_DIR.glob("*.parquet"):
+            old.unlink()
     FEATURES_DIR.parent.mkdir(parents=True, exist_ok=True)
     con.execute(SQL)
     n, c = con.execute(

@@ -12,6 +12,7 @@ the simplest method that answers each question and validate every rule on all 10
 | 4. Order the variables causally | Ask which variable could have been generated first (country → bank → account format → currency → conversions) and check that a child is independent of other variables once its parents are fixed | Conditional-independence reasoning behind constraint-based causal discovery (Spirtes et al., 2000) |
 | 5. Rule out confounders | Re-test every effect inside strata (per currency, per flow, domestic vs cross-border) | Stratification / Simpson's paradox (Simpson, 1951) |
 | 6. Validate and grade | `rule_check` gives scope, matches and exceptions; each rule is graded Proven / Supported / Open / Rejected | Falsification: a rule must survive a test it could fail |
+| 6b. Hold out | Learn each rule on the first 2/3 of the period and score it on the last 1/3 (and, for FX, on country pairs and path lengths never used for learning) | Out-of-sample validation |
 | 7. Explain | Give an economic reason and check a second prediction of that reason in the data | — |
 
 Why not a machine-learning model: a model that predicts well does not state the rule. Where a tree or

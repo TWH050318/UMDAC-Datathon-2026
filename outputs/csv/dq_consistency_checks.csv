@@ -1,0 +1,7 @@
+rule,rows_in_scope,rows_matching,match_rate_pct,exceptions
+PARTICIPANT_COUNT = number of BICs in BIC8_PATH,10400000,10400000.0,100.0,0.0
+CONTINUITY_QFLAG='N'  <=>  path contains '...',10400000,10400000.0,100.0,0.0
+first BIC of path = ORDERING_BIC8,10400000,9881793.0,95.0172,518207.0
+last BIC of path = BENEFICIARY_BIC8,10400000,9880749.0,95.0072,519251.0
+IBAN account country = ordering bank country,5660241,5660241.0,100.0,0.0
+IBAN account country = beneficiary bank country,5621388,5621388.0,100.0,0.0

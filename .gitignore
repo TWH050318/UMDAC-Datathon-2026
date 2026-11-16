@@ -1,0 +1,9 @@
+# Competition rule 2.2: the dataset must never be published or shared.
+data/
+*.csv.zip
+*.zip
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+.vscode/
+*.pbix

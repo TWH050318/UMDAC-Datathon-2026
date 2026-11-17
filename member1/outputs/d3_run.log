@@ -117,7 +117,7 @@ wkn
     ordering country(top10+other)  chi2=       214 df=120  p=2.6e-07  V=0.0015
     UTC hour                       chi2=     1,075 df=276  p=9.73e-95  V=0.0030
   Hour profile lowest-level vs highest-level weeks: V=0.0065
-  Amount by week (NORMAL, 13 groups): KW H=14, epsilon^2=0.00000
+  Amount by week (UNLABELLED, 13 groups): KW H=14, epsilon^2=0.00000
 
 ============================================================================
   T5  Minute / second / batch spikes
@@ -133,31 +133,31 @@ wkn
   T6  Amount, routing type and anomaly labels vs time
 ============================================================================
   log10(amount) by LOCAL hour: KW H=850, epsilon^2=0.00010; by UTC hour: H=11,271, epsilon^2=0.00113
-  Median NORMAL amount by UTC hour: min $2,800 (h4) max $4,357 (h21); ratio x1.56
+  Median UNLABELLED amount by UTC hour: min $2,800 (h4) max $4,357 (h21); ratio x1.56
   Within ordering_country=US (n=1,579,928): amount by UTC hour KW epsilon^2=0.00008
   Sender B: median amount weekend $6,639 vs weekday $6,644; MWU p=0.442, rank-biserial -0.0006
   Sender C: median amount weekend $945 vs weekday $942; MWU p=0.94, rank-biserial +0.0001
   Routing type x UTC hour: V=0.0137 (p=0); routing type x week: see composition; Direct share by local weekend: 63.22% vs weekday 63.23%
-  Anomaly label timing (local time, fitted countries): weekend share and 6-hour block distribution vs NORMAL
-    ROMANCE_SCAM               n=1,336  weekend 10.0% (NORMAL 10.1%, p=1); 6h-block chi2=9.6 p=0.022
-      6h blocks (00-05/06-11/12-17/18-23) observed % [8.9, 27.2, 34.1, 29.7] vs sender-type-matched NORMAL % [7.2, 30.2, 33.7, 29.0]
-    CEO_SCAM                   n=  786  weekend 12.0% (NORMAL 10.1%, p=0.085); 6h-block chi2=6.3 p=0.096
-      6h blocks (00-05/06-11/12-17/18-23) observed % [7.3, 30.8, 31.8, 30.2] vs sender-type-matched NORMAL % [7.0, 31.4, 35.0, 26.5]
-    ACCOUNT_REPLACEMENT_SCAM   n=  542  weekend 8.7% (NORMAL 10.1%, p=0.32); 6h-block chi2=2.5 p=0.47
-      6h blocks (00-05/06-11/12-17/18-23) observed % [5.9, 29.3, 35.8, 29.0] vs sender-type-matched NORMAL % [7.1, 31.1, 34.7, 27.1]
-    FAT_FINGER_MISTAKE         n=1,595  weekend 10.2% (NORMAL 10.1%, p=0.84); 6h-block chi2=3.7 p=0.3
-      6h blocks (00-05/06-11/12-17/18-23) observed % [6.2, 32.9, 33.8, 27.1] vs sender-type-matched NORMAL % [7.1, 31.2, 34.7, 27.0]
-    DUPLICATE_PAYMENT          n=  563  weekend 10.8% (NORMAL 10.1%, p=0.53); 6h-block chi2=19.7 p=0.00019
-      6h blocks (00-05/06-11/12-17/18-23) observed % [9.1, 22.7, 38.2, 30.0] vs sender-type-matched NORMAL % [7.1, 31.1, 34.7, 27.1]
-    CUSTOMER_RECALL            n=  263  weekend 8.4% (NORMAL 10.1%, p=0.41); 6h-block chi2=4.1 p=0.25
-      6h blocks (00-05/06-11/12-17/18-23) observed % [7.6, 26.2, 34.6, 31.6] vs sender-type-matched NORMAL % [7.1, 31.1, 34.7, 27.1]
+  Anomaly label timing (local time, fitted countries): weekend share and 6-hour block distribution vs UNLABELLED
+    ROMANCE_SCAM               n=1,336  weekend 10.0% (UNLABELLED 10.1%, p=1); 6h-block chi2=9.6 p=0.022
+      6h blocks (00-05/06-11/12-17/18-23) observed % [8.9, 27.2, 34.1, 29.7] vs sender-type-matched UNLABELLED % [7.2, 30.2, 33.7, 29.0]
+    CEO_SCAM                   n=  786  weekend 12.0% (UNLABELLED 10.1%, p=0.085); 6h-block chi2=6.3 p=0.096
+      6h blocks (00-05/06-11/12-17/18-23) observed % [7.3, 30.8, 31.8, 30.2] vs sender-type-matched UNLABELLED % [7.0, 31.4, 35.0, 26.5]
+    ACCOUNT_REPLACEMENT_SCAM   n=  542  weekend 8.7% (UNLABELLED 10.1%, p=0.32); 6h-block chi2=2.5 p=0.47
+      6h blocks (00-05/06-11/12-17/18-23) observed % [5.9, 29.3, 35.8, 29.0] vs sender-type-matched UNLABELLED % [7.1, 31.1, 34.7, 27.1]
+    FAT_FINGER_MISTAKE         n=1,595  weekend 10.2% (UNLABELLED 10.1%, p=0.84); 6h-block chi2=3.7 p=0.3
+      6h blocks (00-05/06-11/12-17/18-23) observed % [6.2, 32.9, 33.8, 27.1] vs sender-type-matched UNLABELLED % [7.1, 31.2, 34.7, 27.0]
+    DUPLICATE_PAYMENT          n=  563  weekend 10.8% (UNLABELLED 10.1%, p=0.53); 6h-block chi2=19.7 p=0.00019
+      6h blocks (00-05/06-11/12-17/18-23) observed % [9.1, 22.7, 38.2, 30.0] vs sender-type-matched UNLABELLED % [7.1, 31.1, 34.7, 27.1]
+    CUSTOMER_RECALL            n=  263  weekend 8.4% (UNLABELLED 10.1%, p=0.41); 6h-block chi2=4.1 p=0.25
+      6h blocks (00-05/06-11/12-17/18-23) observed % [7.6, 26.2, 34.6, 31.6] vs sender-type-matched UNLABELLED % [7.1, 31.1, 34.7, 27.1]
 
 ============================================================================
   Export CSV and charts (300 DPI)
 ============================================================================
-  C:\competition\UM-datathon\project_root\outputs\csv\d3_temporal_summary.csv: 125 rows; blocks ['amount_time', 'anomaly_timing', 'composition_by_week', 'country_offset', 'local_dow', 'local_hour', 'negative_control', 'offset_crosscheck', 'type_hour_test', 'type_schedule', 'uniformity', 'utc_dow', 'utc_hour', 'weekly_level']
-  saved C:\competition\UM-datathon\project_root\outputs\charts\d3_local_time_structure.png
-  saved C:\competition\UM-datathon\project_root\outputs\charts\d3_weekly_volume_levels.png
+  C:\competition\UM-datathon\UMDAC-Datathon-2026\member1\outputs\csv\d3_temporal_summary.csv: 125 rows; blocks ['amount_time', 'anomaly_timing', 'composition_by_week', 'country_offset', 'local_dow', 'local_hour', 'negative_control', 'offset_crosscheck', 'type_hour_test', 'type_schedule', 'uniformity', 'utc_dow', 'utc_hour', 'weekly_level']
+  saved C:\competition\UM-datathon\UMDAC-Datathon-2026\member1\outputs\charts\d3_local_time_structure.png
+  saved C:\competition\UM-datathon\UMDAC-Datathon-2026\member1\outputs\charts\d3_weekly_volume_levels.png
   exists: True  11,196 bytes
   exists: True  244,533 bytes
   exists: True  183,702 bytes

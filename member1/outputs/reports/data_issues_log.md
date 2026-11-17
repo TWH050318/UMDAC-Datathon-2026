@@ -1,6 +1,6 @@
 # Data Issues Log - Gate 1 Audit
 
-- **Generated (UTC):** 2026-11-16T17:37:27+00:00
+- **Generated (UTC):** 2026-11-17T05:28:44+00:00
 - **Source:** `swift_umdac_datathon_2026_fictitious_payment_data.csv` (4.61 GB)
 - **Raw rows:** 10,000,000 | **Clean/parquet rows:** 10,000,000 | **Rows dropped:** 0
 - **Method:** DuckDB `read_csv(all_varchar=true)` -> explicit `CAST` after a `TRY_CAST` failure audit (0 failures required, run aborts otherwise). All numbers below are printed by `src/01_data_prep_and_audit.py`.
@@ -10,7 +10,7 @@
 | # | Issue | Rows affected | Decision |
 | :-- | :-- | --: | :-- |
 | 1 | Undocumented `DISCLAIMER` column (multi-line text) | 1 non-null | Isolated and excluded from parquet; no column shift |
-| 2 | `ANOMALY_TYPE` is NULL for normal traffic | 9,992,994 | Filled with `'NORMAL'` |
+| 2 | `ANOMALY_TYPE` is NULL when a row carries no ground-truth label | 9,992,994 | NULLs preserved in `ANOMALY_TYPE`; new column `ANOMALY_GROUP` = `COALESCE(ANOMALY_TYPE,'UNLABELLED')` |
 | 3 | Label `CUSTOMER_RECALL` not listed in the schema reference | 317 | Kept; `is_anomaly=True`; flagged for team |
 | 4 | Exact duplicate rows (all 20 data cols) | 1 surplus (2 in groups) | Flagged `is_exact_dup`; none dropped |
 | 5 | `DUPLICATE_PAYMENT` labels vs exact duplicates | 679 labelled / 1 byte-identical | See section below |
@@ -18,7 +18,7 @@
 | 7 | Invalid CURRENCY_CODE (not 3 uppercase letters / NULL) | 0 | None |
 | 8 | BIC8 length != 8 / NULL | 0 | None |
 | 9 | Numeric cast failures | 0 | None - zero silent coercion |
-| 10 | Leading-zero BIC8 (e.g. `0621US30`) | 9,832,750 (ordering side) | Kept as VARCHAR; hash-verified vs raw |
+| 10 | Leading-zero BIC8 (pattern `0NNNXXNN`; N = digit, X = letter) | 9,832,750 (ordering side) | Kept as VARCHAR; hash-verified vs raw |
 | 11 | Incomplete paths (`...` in BIC8_PATH) | 767,204 | Kept; `CONTINUITY_QFLAG='N'` rows = 767,204; disagreements = 0 |
 
 ## 1. `DISCLAIMER` column
@@ -64,11 +64,13 @@ Column-shift check: 0 rows where `EPOCH_SECONDS` contains disclaimer text. Colum
 | BENEFICIARY_TYPE | 0 | 0 |
 | ANOMALY_TYPE | 9,992,994 | 0 |
 
-## 3. `ANOMALY_TYPE` distribution (after cleaning)
+## 3. `ANOMALY_GROUP` distribution (`ANOMALY_TYPE` with NULL shown as UNLABELLED)
 
-| ANOMALY_TYPE | Rows | % |
+`UNLABELLED` means no ground-truth label. It is *presumed* normal traffic, but it may contain anomalies that were never labelled (e.g. extreme amounts, Section 5).
+
+| ANOMALY_GROUP | Rows | % |
 | :-- | --: | --: |
-| NORMAL | 9,992,994 | 99.9299% |
+| UNLABELLED | 9,992,994 | 99.9299% |
 | ROMANCE_SCAM | 2,476 | 0.0248% |
 | FAT_FINGER_MISTAKE | 1,940 | 0.0194% |
 | CEO_SCAM | 945 | 0.0095% |
@@ -84,7 +86,7 @@ Duplicates are defined on all 20 data columns (including `ANOMALY_TYPE`) using a
 
 | ANOMALY_TYPE | Rows in dup group | Surplus (is_exact_dup) | Total |
 | :-- | --: | --: | --: |
-| NORMAL | 0 | 0 | 9,992,994 |
+| UNLABELLED | 0 | 0 | 9,992,994 |
 | ROMANCE_SCAM | 0 | 0 | 2,476 |
 | FAT_FINGER_MISTAKE | 0 | 0 | 1,940 |
 | CEO_SCAM | 0 | 0 | 945 |
@@ -96,11 +98,11 @@ Duplicates are defined on all 20 data columns (including `ANOMALY_TYPE`) using a
 
 ## 5. Extreme amounts vs `FAT_FINGER_MISTAKE`
 
-NORMAL-row quantiles: p50=3,662.58, p99=1,211,077.85, p99.9=7,820,646.75, p99.99=33,415,933.67.
+UNLABELLED-row quantiles: p50=3,662.58, p99=1,211,077.85, p99.9=7,820,646.75, p99.99=33,415,933.67.
 
 | Label | Rows | Min | Median | Max |
 | :-- | --: | --: | --: | --: |
-| NORMAL | 9,992,994 | 0.01 | 3,662.58 | 1,395,062,089.32 |
+| UNLABELLED | 9,992,994 | 0.01 | 3,662.58 | 1,395,062,089.32 |
 | ROMANCE_SCAM | 2,476 | 0.01 | 109.45 | 123,370.39 |
 | FAT_FINGER_MISTAKE | 1,940 | 0.03 | 260,241.23 | 15,664,132,213.09 |
 | CEO_SCAM | 945 | 0.12 | 20,602.13 | 88,481,911.15 |
@@ -108,7 +110,7 @@ NORMAL-row quantiles: p50=3,662.58, p99=1,211,077.85, p99.9=7,820,646.75, p99.99
 | ACCOUNT_REPLACEMENT_SCAM | 649 | 2.15 | 3,977.30 | 5,836,230.06 |
 | CUSTOMER_RECALL | 317 | 1.87 | 3,163.97 | 12,855,757.01 |
 
-Rows above the NORMAL p99.99 (33,415,933.67) by label: NORMAL=1,000; FAT_FINGER_MISTAKE=279; CEO_SCAM=2. No row removed.
+Rows above the UNLABELLED p99.99 (33,415,933.67) by label: UNLABELLED=1,000; FAT_FINGER_MISTAKE=279; CEO_SCAM=2. No row removed.
 
 ## 6. Other structural checks
 
@@ -140,6 +142,8 @@ Rows above the NORMAL p99.99 (33,415,933.67) by label: NORMAL=1,000; FAT_FINGER_
 | `is_weekend` | Sat/Sun (UTC) |
 | `party_pair` | ORDERING_TYPE + '2' + BENEFICIARY_TYPE |
 | `ordering_country / beneficiary_country` | chars 5-6 of the BIC8 |
-| `is_anomaly` | raw ANOMALY_TYPE was non-null |
+| `ANOMALY_TYPE` | original label, NULL where unlabelled (unchanged from the raw CSV) |
+| `ANOMALY_GROUP` | COALESCE(ANOMALY_TYPE, 'UNLABELLED'); use for grouping and filtering |
+| `is_anomaly` | ANOMALY_TYPE IS NOT NULL |
 | `is_exact_dup` | row is a 2nd+ copy of an identical earlier row |
 | `dup_group_size` | number of identical rows sharing this row's content (1 = unique) |

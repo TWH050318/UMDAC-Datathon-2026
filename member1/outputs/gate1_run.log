@@ -1,0 +1,314 @@
+
+============================================================================
+  [1] INGEST raw CSV via DuckDB (all_varchar, no type inference)
+============================================================================
+Raw row count : 10,000,000
+Raw columns   : 21 -> ['DISCLAIMER', 'EPOCH_SECONDS', 'CURRENCY_CODE', 'USD_AMOUNT', 'ORDERING_BIC8', 'BENEFICIARY_BIC8', 'BIC8_PATH', 'TOTAL_DURATION', 'CONTINUITY_QFLAG', 'CURRENCY_CONVERSION_COUNT', 'PARTICIPANT_COUNT', 'TRANSACTION_TYPE_CODE', 'ORDERING_ACCOUNT', 'BENEFICIARY_ACCOUNT', 'ORDERING_DETAILS', 'ORDERING_TOKENS', 'BENEFICIARY_DETAILS', 'BENEFICIARY_TOKENS', 'ORDERING_TYPE', 'BENEFICIARY_TYPE', 'ANOMALY_TYPE']
+Header matches expected 21-column schema (DISCLAIMER + 20 data columns)
+
+============================================================================
+  [2] DISCLAIMER column audit
+============================================================================
+Rows with non-null DISCLAIMER: 1 of 10,000,000
+  row_id=1: "WARNING: This dataset contains purely fictitious data that has been generated exclusively through hard-coded rules, NumPy 'random number' calls and the Python Faker library.\nThis dataset does not represent any real payment transactions, and therefore any resemblance to real data is purely coincidental.\n\nSwift disclaims all liability for any decisions based on this dataset, and for their consequences.\n\nThis is a fictitious dataset created for the UMDAC Datathon 2026.\n\nSWIFT © 2026. All rights reserved."
+Rows where EPOCH_SECONDS holds disclaimer text (column-shift check): 0
+
+============================================================================
+  [3] NULL counts per column & cast-failure audit (silent-coercion check)
+============================================================================
+column                              NULL   empty-str
+DISCLAIMER                     9,999,999           0
+EPOCH_SECONDS                          0           0
+CURRENCY_CODE                          0           0
+USD_AMOUNT                             0           0
+ORDERING_BIC8                          0           0
+BENEFICIARY_BIC8                       0           0
+BIC8_PATH                              0           0
+TOTAL_DURATION                         0           0
+CONTINUITY_QFLAG                       0           0
+CURRENCY_CONVERSION_COUNT              0           0
+PARTICIPANT_COUNT                      0           0
+TRANSACTION_TYPE_CODE                  0           0
+ORDERING_ACCOUNT                       0           0
+BENEFICIARY_ACCOUNT                    0           0
+ORDERING_DETAILS                       0           0
+ORDERING_TOKENS                        0           0
+BENEFICIARY_DETAILS                    0           0
+BENEFICIARY_TOKENS                     0           0
+ORDERING_TYPE                          0           0
+BENEFICIARY_TYPE                       0           0
+ANOMALY_TYPE                   9,992,994           0
+
+Numeric cast failures (non-null text that fails TRY_CAST):
+  EPOCH_SECONDS               BIGINT        0
+  USD_AMOUNT                  DOUBLE        0
+  TOTAL_DURATION              DOUBLE        0
+  CURRENCY_CONVERSION_COUNT   INTEGER       0
+  PARTICIPANT_COUNT           INTEGER       0
+Non-integer values in integer columns: 0
+
+============================================================================
+  [4] Categorical value audit
+============================================================================
+
+ANOMALY_RAW:
+  <NULL>                           9,992,994  (99.9299%)
+  ROMANCE_SCAM                         2,476  (0.0248%)
+  FAT_FINGER_MISTAKE                   1,940  (0.0194%)
+  CEO_SCAM                               945  (0.0095%)
+  DUPLICATE_PAYMENT                      679  (0.0068%)
+  ACCOUNT_REPLACEMENT_SCAM               649  (0.0065%)
+  CUSTOMER_RECALL                        317  (0.0032%)
+
+ORDERING_TYPE:
+  B                                7,874,637  (78.7464%)
+  C                                2,125,363  (21.2536%)
+
+BENEFICIARY_TYPE:
+  C                                7,118,450  (71.1845%)
+  B                                2,881,550  (28.8155%)
+
+CONTINUITY_QFLAG:
+  Y                                9,232,796  (92.3280%)
+  N                                  767,204  (7.6720%)
+
+TRANSACTION_TYPE_CODE:
+  Direct                           6,323,280  (63.2328%)
+  Indirect                         3,260,758  (32.6076%)
+  Covered                            415,962  (4.1596%)
+
+CURRENCY_CONVERSION_COUNT:
+  1                                5,895,841  (58.9584%)
+  2                                2,017,992  (20.1799%)
+  0                                1,086,531  (10.8653%)
+  3                                  666,605  (6.6660%)
+  4                                  222,062  (2.2206%)
+  5                                   73,963  (0.7396%)
+  6                                   24,675  (0.2467%)
+  7                                    8,263  (0.0826%)
+  8                                    2,681  (0.0268%)
+  9                                      915  (0.0092%)
+  10                                     312  (0.0031%)
+  11                                     109  (0.0011%)
+  12                                      36  (0.0004%)
+  13                                       9  (0.0001%)
+  15                                       3  (0.0000%)
+  14                                       1  (0.0000%)
+  17                                       1  (0.0000%)
+  16                                       1  (0.0000%)
+
+PARTICIPANT_COUNT:
+  2                                6,323,280  (63.2328%)
+  3                                2,324,319  (23.2432%)
+  4                                  855,386  (8.5539%)
+  5                                  314,014  (3.1401%)
+  6                                  115,701  (1.1570%)
+  7                                   42,622  (0.4262%)
+  8                                   15,481  (0.1548%)
+  9                                    5,758  (0.0576%)
+  10                                   2,205  (0.0221%)
+  11                                     769  (0.0077%)
+  12                                     310  (0.0031%)
+  13                                      91  (0.0009%)
+  14                                      43  (0.0004%)
+  15                                      12  (0.0001%)
+  16                                       4  (0.0000%)
+  17                                       2  (0.0000%)
+  22                                       1  (0.0000%)
+  21                                       1  (0.0000%)
+  19                                       1  (0.0000%)
+
+Distinct CURRENCY_CODE: 155; rows not matching ^[A-Z]{3}$ (or NULL): 0
+
+============================================================================
+  [5] Numeric & structural audit
+============================================================================
+USD_AMOUNT <= 0: 0 (negative 0, zero 0); NULL: 0
+TOTAL_DURATION < 0: 0
+BIC8 length != 8 or NULL: 0
+BIC8_PATH containing '...': 767,204; CONTINUITY_QFLAG='N': 767,204; disagreements: 0
+Complete paths whose segment count != PARTICIPANT_COUNT: 0
+ORDERING_BIC8 == BENEFICIARY_BIC8: 2,387
+ORDERING_BIC8 with a leading zero: 9,832,750
+
+============================================================================
+  [6] EPOCH_SECONDS range (UTC)
+============================================================================
+MIN 1682853746 -> 2023-04-30T11:22:26+00:00
+MAX 1690797361 -> 2023-07-31T09:56:01+00:00
+
+============================================================================
+  [7] Exact duplicate detection (all 20 data columns; DISCLAIMER excluded)
+============================================================================
+Rows in duplicate groups: 2; groups (full-tuple): 1; groups (hash): 1
+Surplus duplicate rows (rn>1) flagged is_exact_dup: 1
+
+ANOMALY_TYPE                  in dup group  surplus (rn>1)       total
+<NULL>                                   0               0   9,992,994
+ROMANCE_SCAM                             0               0       2,476
+FAT_FINGER_MISTAKE                       0               0       1,940
+CEO_SCAM                                 0               0         945
+DUPLICATE_PAYMENT                        2               1         679
+ACCOUNT_REPLACEMENT_SCAM                 0               0         649
+CUSTOMER_RECALL                          0               0         317
+
+DUPLICATE_PAYMENT labelled: 679; of which byte-identical to an earlier row: 1
+Unlabelled rows that are exact surplus duplicates: 0
+
+============================================================================
+  [8] USD_AMOUNT extremes vs FAT_FINGER_MISTAKE (flag only, never drop)
+============================================================================
+UNLABELLED rows quantiles  p50=3,662.58  p99=1,211,077.85  p99.9=7,820,646.75  p99.99=33,415,933.67
+Rows above UNLABELLED p99.99 (33,415,933.67) by label:
+  <NULL>                           1,000
+  FAT_FINGER_MISTAKE                 279
+  CEO_SCAM                             2
+
+label                                  n             min          median                 max
+<NULL>                         9,992,994            0.01        3,662.58    1,395,062,089.32
+ROMANCE_SCAM                       2,476            0.01          109.45          123,370.39
+FAT_FINGER_MISTAKE                 1,940            0.03      260,241.23   15,664,132,213.09
+CEO_SCAM                             945            0.12       20,602.13       88,481,911.15
+DUPLICATE_PAYMENT                    679            0.58        2,888.63       10,000,000.00
+ACCOUNT_REPLACEMENT_SCAM             649            2.15        3,977.30        5,836,230.06
+CUSTOMER_RECALL                      317            1.87        3,163.97       12,855,757.01
+
+============================================================================
+  [9] Build clean table (engineered columns, flags; no rows dropped)
+============================================================================
+clean rows = 10,000,000 == raw rows = 10,000,000  -> zero rows lost
+
+============================================================================
+  [10] Export parquet & round-trip verification
+============================================================================
+Parquet rows: 10,000,000  size: 1,298.5 MB
+
+check                                                            raw                           parquet  ok
+hash-sum ORDERING_BIC8                    89854813942503028851691793        89854813942503028851691793  OK
+hash-sum BENEFICIARY_BIC8                 88753798270380563896906753        88753798270380563896906753  OK
+hash-sum BIC8_PATH                        91913711381796644834676289        91913711381796644834676289  OK
+hash-sum ORDERING_ACCOUNT                 93590651573710611343185702        93590651573710611343185702  OK
+hash-sum BENEFICIARY_ACCOUNT              93304321242303380013798239        93304321242303380013798239  OK
+hash-sum ORDERING_DETAILS                 90616489956014927512950412        90616489956014927512950412  OK
+hash-sum BENEFICIARY_DETAILS              92164673190275651816532988        92164673190275651816532988  OK
+hash-sum ORDERING_TOKENS                  89934561896152756808467836        89934561896152756808467836  OK
+hash-sum BENEFICIARY_TOKENS               90852028609220279513129151        90852028609220279513129151  OK
+hash-sum CURRENCY_CODE                   114640178902490034854417176       114640178902490034854417176  OK
+sum      EPOCH_SECONDS                   16,869,273,737,817,292.0000       16,869,273,737,817,296.0000  OK
+sum      USD_AMOUNT                             972,041,020,382.0872              972,041,020,382.0918  OK
+sum      TOTAL_DURATION                           7,715,102,084.0000                7,715,102,084.0000  OK
+sum      CURRENCY_CONVERSION_COUNT                   13,430,237.0000                   13,430,237.0000  OK
+sum      PARTICIPANT_COUNT                           25,815,715.0000                   25,815,715.0000  OK
+
+Leading-zero ORDERING_BIC8 rows in parquet: 9,832,750 (== typed 9,832,750); masked sample pattern ['0NNNXXNN', '0NNNXXXN', '0NNNXXXN']
+
+Parquet schema:
+  row_id                      BIGINT
+  EPOCH_SECONDS               BIGINT
+  CURRENCY_CODE               VARCHAR
+  USD_AMOUNT                  DOUBLE
+  ORDERING_BIC8               VARCHAR
+  BENEFICIARY_BIC8            VARCHAR
+  BIC8_PATH                   VARCHAR
+  TOTAL_DURATION              DOUBLE
+  CONTINUITY_QFLAG            VARCHAR
+  CURRENCY_CONVERSION_COUNT   INTEGER
+  PARTICIPANT_COUNT           INTEGER
+  TRANSACTION_TYPE_CODE       VARCHAR
+  ORDERING_ACCOUNT            VARCHAR
+  BENEFICIARY_ACCOUNT         VARCHAR
+  ORDERING_DETAILS            VARCHAR
+  ORDERING_TOKENS             VARCHAR
+  BENEFICIARY_DETAILS         VARCHAR
+  BENEFICIARY_TOKENS          VARCHAR
+  ORDERING_TYPE               VARCHAR
+  BENEFICIARY_TYPE            VARCHAR
+  ANOMALY_TYPE                VARCHAR
+  ANOMALY_GROUP               VARCHAR
+  utc_dt                      TIMESTAMP
+  utc_hour                    TINYINT
+  utc_dow                     TINYINT
+  is_weekend                  BOOLEAN
+  party_pair                  VARCHAR
+  ordering_country            VARCHAR
+  beneficiary_country         VARCHAR
+  is_anomaly                  BOOLEAN
+  is_exact_dup                BOOLEAN
+  dup_group_size              BIGINT
+
+Engineered-column checks:
+  utc_hour 0-23; utc_dow 0-6; weekend/dow mismatches 0; utc_dt 2023-04-30 11:22:26 -> 2023-07-31 09:56:01; is_anomaly/label mismatches 0; epoch round-trip mismatches 0
+
+  ANOMALY_TYPE:
+    <NULL>                         9,992,994
+    ROMANCE_SCAM                       2,476
+    FAT_FINGER_MISTAKE                 1,940
+    CEO_SCAM                             945
+    DUPLICATE_PAYMENT                    679
+    ACCOUNT_REPLACEMENT_SCAM             649
+    CUSTOMER_RECALL                      317
+
+  ANOMALY_GROUP:
+    UNLABELLED                     9,992,994
+    ROMANCE_SCAM                       2,476
+    FAT_FINGER_MISTAKE                 1,940
+    CEO_SCAM                             945
+    DUPLICATE_PAYMENT                    679
+    ACCOUNT_REPLACEMENT_SCAM             649
+    CUSTOMER_RECALL                      317
+
+  party_pair:
+    B2C                            5,603,692
+    B2B                            2,270,945
+    C2C                            1,514,758
+    C2B                              610,605
+
+  is_anomaly:
+    false                          9,992,994
+    true                               7,006
+
+  is_exact_dup:
+    false                          9,999,999
+    true                                   1
+
+  is_weekend:
+    false                          8,881,524
+    true                           1,118,476
+
+  ordering_country top 10:
+    US                             1,582,415
+    CH                               786,246
+    GB                               662,529
+    FR                               538,746
+    DE                               509,341
+    SG                               393,191
+    CN                               342,194
+    IT                               298,586
+    BE                               295,928
+    LU                               290,106
+
+  ANOMALY_TYPE NULLs preserved in parquet: 9,992,994 (raw: 9,992,994); ANOMALY_GROUP = 'UNLABELLED': 9,992,994; ANOMALY_GROUP NULLs: 0
+
+  Anomaly label counts identical in raw CSV and parquet: OK
+
+Log written: C:\competition\UM-datathon\UMDAC-Datathon-2026\member1\outputs\reports\data_issues_log.md
+
+============================================================================
+  GATE 1 - FINAL VERIFICATION SUMMARY
+============================================================================
+  Raw CSV rows                :   10,000,000
+  Clean table rows            :   10,000,000
+  Parquet rows                :   10,000,000
+  Rows dropped                :            0
+  Numeric cast failures       :            0   (zero silent coercion)
+  Parquet == raw checksums    : PASS
+  Anomaly labels raw==parquet : PASS
+  Anomalies preserved         :        7,006  (ROMANCE_SCAM=2,476, FAT_FINGER_MISTAKE=1,940, CEO_SCAM=945, DUPLICATE_PAYMENT=679, ACCOUNT_REPLACEMENT_SCAM=649, CUSTOMER_RECALL=317)
+  Exact dup rows flagged      :            1  (0 dropped)
+  USD_AMOUNT <= 0             :            0
+  BIC8 length != 8            :            0
+  Invalid CURRENCY_CODE       :            0
+  UTC range                   : 2023-04-30 11:22 -> 2023-07-31 09:56
+  Parquet                     : C:\competition\UM-datathon\UMDAC-Datathon-2026\member1\data\processed\clean_payments.parquet (1,298.5 MB)
+  Issues log                  : C:\competition\UM-datathon\UMDAC-Datathon-2026\member1\outputs\reports\data_issues_log.md
+  GATE 1 COMPLETE

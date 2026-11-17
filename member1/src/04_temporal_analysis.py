@@ -36,7 +36,7 @@ def cramers(ct):
     return chi, p, dof, np.sqrt(chi / (ct.sum() * (min(ct.shape) - 1)))
 
 d = con.execute(f"""SELECT EPOCH_SECONDS e, utc_dt, utc_hour h, utc_dow w, ORDERING_TYPE ot, party_pair pp,
-        CURRENCY_CODE cur, TRANSACTION_TYPE_CODE tt, ANOMALY_TYPE a, USD_AMOUNT x, ordering_country oc, beneficiary_country bc
+        CURRENCY_CODE cur, TRANSACTION_TYPE_CODE tt, ANOMALY_GROUP a, USD_AMOUNT x, ordering_country oc, beneficiary_country bc
         FROM {Q}""").df()
 # utc_hour / utc_dow are stored as TINYINT in the parquet: widen BEFORE any arithmetic (dow*24+hour overflows int8)
 d["h"] = d.h.astype("int32"); d["w"] = d.w.astype("int32")
@@ -223,8 +223,8 @@ for nm_, col in [("ordering type", full.ot), ("party pair", full.pp), ("routing 
 low = fd[fd.wkn.isin([w_ for w_, _ in clusters[0]])]; hi = fd[fd.wkn.isin([w_ for w_, _ in clusters[-1]])]
 chi, p, dof, v = cramers(np.vstack([low.groupby("h").size().reindex(range(24), fill_value=0).values, hi.groupby("h").size().reindex(range(24), fill_value=0).values]))
 print(f"  Hour profile lowest-level vs highest-level weeks: V={v:.4f}")
-kwm = stats.kruskal(*[g.lx.values for _, g in fd[fd.a == "NORMAL"].groupby("wkn")])
-print(f"  Amount by week (NORMAL, 13 groups): KW H={kwm.statistic:,.0f}, epsilon^2={(kwm.statistic-12)/(len(fd)-13):.5f}")
+kwm = stats.kruskal(*[g.lx.values for _, g in fd[fd.a == "UNLABELLED"].groupby("wkn")])
+print(f"  Amount by week (UNLABELLED, 13 groups): KW H={kwm.statistic:,.0f}, epsilon^2={(kwm.statistic-12)/(len(fd)-13):.5f}")
 
 # ── T5 batch / minute / second structure ─────────────────────────────────
 hdr("T5  Minute / second / batch spikes")
@@ -243,18 +243,18 @@ print(f"  Rows per distinct timestamp-second: max {cps.max()}, share of rows in 
 
 # ── T6 amount, routing, anomalies vs time ────────────────────────────────
 hdr("T6  Amount, routing type and anomaly labels vs time")
-nmv = sub[sub.a == "NORMAL"]
+nmv = sub[sub.a == "UNLABELLED"]
 kw_h = stats.kruskal(*[g.lx.values for _, g in nmv.groupby("lh")])
-kw_hu = stats.kruskal(*[g.lx.values for _, g in full[full.a == "NORMAL"].groupby("h")])
-print(f"  log10(amount) by LOCAL hour: KW H={kw_h.statistic:,.0f}, epsilon^2={(kw_h.statistic-23)/(len(nmv)-24):.5f}; by UTC hour: H={kw_hu.statistic:,.0f}, epsilon^2={(kw_hu.statistic-23)/(len(full[full.a=='NORMAL'])-24):.5f}")
-medh = full[full.a == "NORMAL"].groupby("h").x.median()
-print(f"  Median NORMAL amount by UTC hour: min ${medh.min():,.0f} (h{medh.idxmin()}) max ${medh.max():,.0f} (h{medh.idxmax()}); ratio x{medh.max()/medh.min():.2f}")
+kw_hu = stats.kruskal(*[g.lx.values for _, g in full[full.a == "UNLABELLED"].groupby("h")])
+print(f"  log10(amount) by LOCAL hour: KW H={kw_h.statistic:,.0f}, epsilon^2={(kw_h.statistic-23)/(len(nmv)-24):.5f}; by UTC hour: H={kw_hu.statistic:,.0f}, epsilon^2={(kw_hu.statistic-23)/(len(full[full.a=='UNLABELLED'])-24):.5f}")
+medh = full[full.a == "UNLABELLED"].groupby("h").x.median()
+print(f"  Median UNLABELLED amount by UTC hour: min ${medh.min():,.0f} (h{medh.idxmin()}) max ${medh.max():,.0f} (h{medh.idxmax()}); ratio x{medh.max()/medh.min():.2f}")
 # is the UTC-hour effect a country-mix effect? within US only
-us = full[(full.oc == "US") & (full.a == "NORMAL")]
+us = full[(full.oc == "US") & (full.a == "UNLABELLED")]
 kw_us = stats.kruskal(*[g.lx.values for _, g in us.groupby("h")])
 print(f"  Within ordering_country=US (n={len(us):,}): amount by UTC hour KW epsilon^2={(kw_us.statistic-23)/(len(us)-24):.5f}")
 add("amount_time", test="KW local hour", epsilon2=float((kw_h.statistic - 23) / (len(nmv) - 24)))
-add("amount_time", test="KW UTC hour", epsilon2=float((kw_hu.statistic - 23) / (len(full[full.a == 'NORMAL']) - 24)))
+add("amount_time", test="KW UTC hour", epsilon2=float((kw_hu.statistic - 23) / (len(full[full.a == 'UNLABELLED']) - 24)))
 add("amount_time", test="KW UTC hour within US", epsilon2=float((kw_us.statistic - 23) / (len(us) - 24)))
 for t in ("B", "C"):
     a_ = nmv[(nmv.ot == t) & (nmv.lw >= 5)].lx.values; b_ = nmv[(nmv.ot == t) & (nmv.lw < 5)].lx.values
@@ -263,22 +263,22 @@ for t in ("B", "C"):
 chi, p, dof, v = cramers(pd.crosstab(full.tt, full.h).values)
 print(f"  Routing type x UTC hour: V={v:.4f} (p={p:.3g}); routing type x week: see composition; Direct share by local weekend: "
       f"{(sub[sub.lw>=5].tt=='Direct').mean():.2%} vs weekday {(sub[sub.lw<5].tt=='Direct').mean():.2%}")
-print("  Anomaly label timing (local time, fitted countries): weekend share and 6-hour block distribution vs NORMAL")
-subn = sub[sub.a == "NORMAL"]
+print("  Anomaly label timing (local time, fitted countries): weekend share and 6-hour block distribution vs UNLABELLED")
+subn = sub[sub.a == "UNLABELLED"]
 blk = lambda x: (x // 6)
 nb = blk(subn.lh).value_counts(normalize=True).sort_index()
 for lab in ["ROMANCE_SCAM", "CEO_SCAM", "ACCOUNT_REPLACEMENT_SCAM", "FAT_FINGER_MISTAKE", "DUPLICATE_PAYMENT", "CUSTOMER_RECALL"]:
     s = sub[sub.a == lab]
     if len(s) < 30: continue
     ob = np.bincount(blk(s.lh), minlength=4)
-    # reference matched on sender type (B/C differ slightly in hour profile): expected = sum_t share_t * NORMAL block dist of type t
+    # reference matched on sender type (B/C differ slightly in hour profile): expected = sum_t share_t * UNLABELLED block dist of type t
     exp_b = np.zeros(4)
     for t_, c_ in s.ot.value_counts().items():
         exp_b += c_ * blk(subn[subn.ot == t_].lh).value_counts(normalize=True).reindex(range(4), fill_value=0).values
     chi, p = stats.chisquare(ob, exp_b * (len(s) / exp_b.sum()))
     wkp = stats.binomtest(int((s.lw >= 5).sum()), len(s), (subn.lw >= 5).mean()).pvalue
-    print(f"    {lab:<26} n={len(s):>5,}  weekend {(s.lw>=5).mean():.1%} (NORMAL {(subn.lw>=5).mean():.1%}, p={wkp:.2g}); 6h-block chi2={chi:.1f} p={p:.2g}")
-    print(f"      6h blocks (00-05/06-11/12-17/18-23) observed % {np.round(ob/ob.sum()*100,1).tolist()} vs sender-type-matched NORMAL % {np.round(exp_b/exp_b.sum()*100,1).tolist()}")
+    print(f"    {lab:<26} n={len(s):>5,}  weekend {(s.lw>=5).mean():.1%} (UNLABELLED {(subn.lw>=5).mean():.1%}, p={wkp:.2g}); 6h-block chi2={chi:.1f} p={p:.2g}")
+    print(f"      6h blocks (00-05/06-11/12-17/18-23) observed % {np.round(ob/ob.sum()*100,1).tolist()} vs sender-type-matched UNLABELLED % {np.round(exp_b/exp_b.sum()*100,1).tolist()}")
     add("anomaly_timing", label=lab, n=len(s), weekend_share=float((s.lw >= 5).mean()), weekend_p=float(wkp), block_p=float(p))
 
 # ── Export & charts ──────────────────────────────────────────────────────

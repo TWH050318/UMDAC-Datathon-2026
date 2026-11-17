@@ -7,7 +7,7 @@ Hypotheses (all tested on data/processed/clean_payments.parquet only; no externa
   H3  CURRENCY_CODE is the ordering-country's home currency (home currency is DERIVED as the
       modal currency per ordering_country in this data) with a EUR/USD hub component;
       the share depends on CURRENCY_CONVERSION_COUNT == 0 vs > 0.
-  H4  Median USD_AMOUNT differs across currencies (Kruskal-Wallis): normal rows first, then all rows;
+  H4  Median USD_AMOUNT differs across currencies (Kruskal-Wallis): UNLABELLED rows first, then all rows;
       confound checks stratified by party_pair and conversion status.
 Outputs: outputs/csv/d1_currency_summary.csv, outputs/charts/d1_*.png
 """
@@ -106,7 +106,7 @@ for side in ("ordering", "beneficiary"):
     modal = df(f"""WITH c AS (SELECT {col} ctry, CURRENCY_CODE cur, COUNT(*) n FROM {Q} GROUP BY 1,2),
         t AS (SELECT ctry, SUM(n) tot FROM c GROUP BY 1)
         SELECT c.ctry, c.cur, c.n, t.tot FROM c JOIN t USING(ctry)
-        QUALIFY ROW_NUMBER() OVER (PARTITION BY c.ctry ORDER BY c.n DESC) = 1""")
+        QUALIFY ROW_NUMBER() OVER (PARTITION BY c.ctry ORDER BY c.n DESC, c.cur ASC) = 1""")
     modal["pct"] = modal.n / modal.tot
     big = modal[modal.tot >= MIN_N]
     wm = (big.n.sum() / big.tot.sum())
@@ -170,7 +170,7 @@ print(f"  Ordering countries with EUR >= 50% of rows: {len(eur_cty)} -> {list(eu
 # ── H4: amount by currency ─────────────────────────────────────────────────
 hdr("H4  USD_AMOUNT by currency (Kruskal-Wallis)")
 amt = df(f"SELECT CURRENCY_CODE c, party_pair pp, (CURRENCY_CONVERSION_COUNT=0) conv0, "
-         f"ANOMALY_TYPE a, USD_AMOUNT x FROM {Q}")
+         f"ANOMALY_GROUP a, USD_AMOUNT x FROM {Q}")
 amt["lx"] = np.log10(amt.x)
 cnt = amt.c.value_counts()
 elig = list(cnt[cnt >= MIN_N].index)
@@ -187,18 +187,18 @@ def kw(sub, label, by="c", min_n=MIN_N):
     print(f"  {label:<46} k={k:<3} n={n:>10,}  H={H:>12,.0f}  p={p:.3g}  epsilon^2={eps2:.4f}")
     return H, p, eps2, k, n
 
-normal = amt[amt.a == "NORMAL"]
-kw_n = kw(normal, "NORMAL rows only")
+normal = amt[amt.a == "UNLABELLED"]
+kw_n = kw(normal, "UNLABELLED rows only")
 kw_a = kw(amt, "ALL rows (anomalies included)")
 kw_ff = kw(amt[amt.a != "FAT_FINGER_MISTAKE"], "all excl. FAT_FINGER_MISTAKE")
-print("  Confound check - within party_pair (NORMAL):")
+print("  Confound check - within party_pair (UNLABELLED):")
 kw_pp = {}
 for pr, g in normal.groupby("pp"):
     kw_pp[pr] = kw(g, f"  party_pair={pr}", min_n=MIN_N)
-print("  Confound check - within conversion status (NORMAL):")
+print("  Confound check - within conversion status (UNLABELLED):")
 for flag, g in normal.groupby("conv0"):
     kw(g, f"  conv0={flag}")
-print("  Control: does party_pair alone explain amount? (NORMAL) ")
+print("  Control: does party_pair alone explain amount? (UNLABELLED) ")
 kw(normal.assign(pp2=normal.pp), "  party_pair as grouping", by="pp2", min_n=1)
 
 # median table
@@ -207,7 +207,7 @@ med["median_usd"] = 10 ** med.median_log
 med_all = amt.groupby("c").x.median().rename("median_usd_all")
 usd_med = med.loc["USD", "median_usd"]
 med["ratio_vs_USD"] = med.median_usd / usd_med
-print(f"\n  NORMAL median USD_AMOUNT: USD = {usd_med:,.2f}")
+print(f"\n  UNLABELLED median USD_AMOUNT: USD = {usd_med:,.2f}")
 top_c = list(freq.c.head(15))
 print(f"  {'cur':<5}{'n':>10}{'median':>12}{'x USD':>8}{'MWU vs USD: p':>16}{'rank-biserial':>15}")
 usd_vals = normal[normal.c == "USD"].lx.values
@@ -223,7 +223,7 @@ for c in top_c:
 spread = med.median_usd.max() / med.median_usd.min()
 print(f"\n  Across {len(med)} eligible currencies: lowest median {med.median_usd.min():,.2f} ({med.median_usd.idxmin()}), "
       f"highest {med.median_usd.max():,.2f} ({med.median_usd.idxmax()}), spread x{spread:,.1f}")
-print("  Lowest 6 / highest 6 medians (NORMAL):")
+print("  Lowest 6 / highest 6 medians (UNLABELLED):")
 srt = med.sort_values("median_usd")
 print(srt.head(6)[["n", "median_usd"]].round(2).to_string())
 print(srt.tail(6)[["n", "median_usd"]].round(2).to_string())
@@ -242,7 +242,7 @@ for pr in pair_n.index:
 conv_tab = base.groupby("c").agg(share_conv0=("conv0", "mean"), pct_ordering_home=("is_ord_home", "mean"),
                                  pct_beneficiary_home=("is_ben_home", "mean"), mean_conv_count=("cc", "mean"))
 summ = summ.join(conv_tab)
-summ = summ.join(med[["n", "median_usd", "ratio_vs_USD"]].rename(columns={"n": "n_normal_ge_min", "median_usd": "median_usd_normal"}))
+summ = summ.join(med[["n", "median_usd", "ratio_vs_USD"]].rename(columns={"n": "n_unlabelled_ge_min", "median_usd": "median_usd_unlabelled"}))
 summ = summ.join(med_all)
 summ["mwu_p_vs_USD"] = pd.Series({c: v[0] for c, v in mwu_rows.items()})
 summ["mwu_rank_biserial_vs_USD"] = pd.Series({c: v[1] for c, v in mwu_rows.items()})
@@ -276,7 +276,7 @@ fig.tight_layout(rect=(0, 0.03, 1, 1))
 p1 = os.path.join(CH_DIR, "d1_currency_frequency.png")
 fig.savefig(p1, dpi=300); plt.close(fig); print("  saved", p1)
 
-# Chart 2: median NORMAL amount by currency, top-15
+# Chart 2: median UNLABELLED amount by currency, top-15
 fig, ax = plt.subplots(figsize=(9, 6))
 t = med.loc[[c for c in top_c if c in med.index]].sort_values("median_usd")
 cols = [BLUE if c == "USD" else GREY for c in t.index]
@@ -287,12 +287,12 @@ for y, (c, r) in enumerate(t.iterrows()):
             bbox=dict(facecolor="white", edgecolor="none", pad=1.0))
 ax.axvline(usd_med, color=BLUE, lw=1, ls="--")
 ax.set_xlim(t.median_usd.min() * 0.5, t.median_usd.max() * 6)
-ax.set_xlabel("Median USD_AMOUNT, normal payments (log scale)")
+ax.set_xlabel("Median USD_AMOUNT, unlabelled payments (log scale)")
 ax.set_title(f"Median payment spans \\${med.median_usd.min():,.0f} ({med.median_usd.idxmin()}) to "
              f"\\${med.median_usd.max():,.0f} ({med.median_usd.idxmax()}) across {len(med)} currencies "
              f"(x{spread:,.0f}); CNY is {1/med.loc['CNY','ratio_vs_USD']:.1f}x and UAH {1/med.loc['UAH','ratio_vs_USD']:.0f}x below USD",
              loc="left", fontsize=10.5, fontweight="bold", color=INK, wrap=True)
-fig.text(0.01, 0.01, f"Top-15 currencies by volume, NORMAL rows only; KW epsilon^2 = {kw_n[2]:.3f} across {kw_n[3]} currencies "
+fig.text(0.01, 0.01, f"Top-15 currencies by volume, UNLABELLED rows only; KW epsilon^2 = {kw_n[2]:.3f} across {kw_n[3]} currencies "
          f"(n >= {MIN_N}). Dashed = USD median.", fontsize=8, color="#4a4f58")
 fig.tight_layout(rect=(0, 0.03, 1, 1))
 p2 = os.path.join(CH_DIR, "d1_currency_median_amount.png")

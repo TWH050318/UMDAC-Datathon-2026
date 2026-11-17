@@ -8,7 +8,7 @@ Design rules (SKILL.md):
     -> proves zero silent coercion (any failure aborts the run).
   * ID / BIC columns stay VARCHAR (leading zeros preserved, byte-checked vs raw).
   * Never drop rows. Anomalies/duplicates are flagged, not removed.
-  * ANOMALY_TYPE NULL -> 'NORMAL'.
+  * ANOMALY_TYPE keeps its original NULLs; ANOMALY_GROUP = COALESCE(ANOMALY_TYPE, 'UNLABELLED').
 
 Outputs:
   data/processed/clean_payments.parquet
@@ -200,17 +200,17 @@ dp_total = dict((a, n) for a, g, s, n in xt).get("DUPLICATE_PAYMENT", 0)
 dp_exact = dict((a, s) for a, g, s, n in xt).get("DUPLICATE_PAYMENT", 0)
 print(f"\nDUPLICATE_PAYMENT labelled: {dp_total:,}; of which byte-identical to an earlier row: {dp_exact:,}")
 unl_dup = dict((a, s) for a, g, s, n in xt).get("<NULL>", 0)
-print(f"Unlabelled (NORMAL) rows that are exact surplus duplicates: {unl_dup:,}")
+print(f"Unlabelled rows that are exact surplus duplicates: {unl_dup:,}")
 
 # ── 8. OUTLIERS vs FAT_FINGER ───────────────────────────────────────────────
 h("[8] USD_AMOUNT extremes vs FAT_FINGER_MISTAKE (flag only, never drop)")
 q = con.execute("""SELECT quantile_cont(USD_AMOUNT,[0.5,0.99,0.999,0.9999]) FROM typed
                    WHERE ANOMALY_RAW IS NULL""").fetchone()[0]
-print(f"NORMAL rows quantiles  p50={q[0]:,.2f}  p99={q[1]:,.2f}  p99.9={q[2]:,.2f}  p99.99={q[3]:,.2f}")
+print(f"UNLABELLED rows quantiles  p50={q[0]:,.2f}  p99={q[1]:,.2f}  p99.9={q[2]:,.2f}  p99.99={q[3]:,.2f}")
 thr = q[3]
 ext = con.execute(f"""SELECT COALESCE(ANOMALY_RAW,'<NULL>'), COUNT(*) FROM typed
                       WHERE USD_AMOUNT > {thr} GROUP BY 1 ORDER BY 2 DESC""").fetchall()
-print(f"Rows above NORMAL p99.99 ({thr:,.2f}) by label:")
+print(f"Rows above UNLABELLED p99.99 ({thr:,.2f}) by label:")
 for a, n in ext:
     print(f"  {a:<28}{n:>10,}")
 per_lab = con.execute("""SELECT COALESCE(ANOMALY_RAW,'<NULL>'), COUNT(*), MIN(USD_AMOUNT),
@@ -228,7 +228,8 @@ con.execute(f"""
     SELECT
         t.row_id,
         {', '.join('t."'+c+'"' for c in orig)},
-        COALESCE(t.ANOMALY_RAW, 'NORMAL')                   AS ANOMALY_TYPE,
+        t.ANOMALY_RAW                                       AS ANOMALY_TYPE,   -- original label; NULL = no ground-truth label
+        COALESCE(t.ANOMALY_RAW, 'UNLABELLED')               AS ANOMALY_GROUP,  -- non-null grouping key for analysis
         epoch_ms(t.EPOCH_SECONDS * 1000)                    AS utc_dt,        -- naive TIMESTAMP, UTC
         CAST(hour(epoch_ms(t.EPOCH_SECONDS * 1000)) AS TINYINT)               AS utc_hour,
         CAST(isodow(epoch_ms(t.EPOCH_SECONDS * 1000)) - 1 AS TINYINT)         AS utc_dow,   -- 0=Mon..6=Sun
@@ -270,7 +271,10 @@ for c in ["EPOCH_SECONDS", "USD_AMOUNT", "TOTAL_DURATION", "CURRENCY_CONVERSION_
 assert chk_ok, "Parquet content differs from raw CSV"
 nz = con.execute(f"SELECT COUNT(*) FROM {pq} WHERE ORDERING_BIC8 LIKE '0%'").fetchone()[0]
 smp = [r[0] for r in con.execute(f"SELECT ORDERING_BIC8 FROM {pq} WHERE ORDERING_BIC8 LIKE '0%' LIMIT 3").fetchall()]
-print(f"\nLeading-zero ORDERING_BIC8 rows in parquet: {nz:,} (== typed {lz:,}); sample {smp}")
+def mask(s):   # generic placeholder: keeps the leading zero, hides the actual identifier (N = digit, X = letter)
+    return s[0] + "".join("N" if ch.isdigit() else "X" if ch.isalpha() else ch for ch in s[1:])
+smp = [mask(s_) for s_ in smp]
+print(f"\nLeading-zero ORDERING_BIC8 rows in parquet: {nz:,} (== typed {lz:,}); masked sample pattern {smp}")
 assert nz == lz
 schema = con.execute(f"DESCRIBE SELECT * FROM {pq}").fetchall()
 print("\nParquet schema:")
@@ -283,23 +287,29 @@ chk = con.execute(f"""
     SELECT MIN(utc_hour), MAX(utc_hour), MIN(utc_dow), MAX(utc_dow),
            COUNT(*) FILTER (WHERE is_weekend <> (utc_dow >= 5)),
            MIN(utc_dt), MAX(utc_dt),
-           COUNT(*) FILTER (WHERE is_anomaly <> (ANOMALY_TYPE <> 'NORMAL')),
+           COUNT(*) FILTER (WHERE is_anomaly <> (ANOMALY_TYPE IS NOT NULL)),
            COUNT(*) FILTER (WHERE EXTRACT(epoch FROM utc_dt) <> EPOCH_SECONDS) FROM {pq}""").fetchone()
 print(f"  utc_hour {chk[0]}-{chk[1]}; utc_dow {chk[2]}-{chk[3]}; weekend/dow mismatches {chk[4]}; "
       f"utc_dt {chk[5]} -> {chk[6]}; is_anomaly/label mismatches {chk[7]}; epoch round-trip mismatches {chk[8]}")
 assert chk[4] == 0 and chk[7] == 0 and chk[8] == 0
-for col in ["ANOMALY_TYPE", "party_pair", "is_anomaly", "is_exact_dup", "is_weekend"]:
+for col in ["ANOMALY_TYPE", "ANOMALY_GROUP", "party_pair", "is_anomaly", "is_exact_dup", "is_weekend"]:
     print(f"\n  {col}:")
     for v, n in vc(col, pq):
         print(f"    {v:<28}{n:>12,}")
 print("\n  ordering_country top 10:")
 for v, n in vc("ordering_country", pq, 10):
     print(f"    {v:<28}{n:>12,}")
-anom_clean = {v: n for v, n in vc("ANOMALY_TYPE", pq)}
+anom_clean = {v: n for v, n in vc("ANOMALY_GROUP", pq)}
+null_pq = con.execute(f"SELECT COUNT(*) FROM {pq} WHERE ANOMALY_TYPE IS NULL").fetchone()[0]
+grp_unl = con.execute(f"SELECT COUNT(*) FROM {pq} WHERE ANOMALY_GROUP = 'UNLABELLED'").fetchone()[0]
+grp_null = con.execute(f"SELECT COUNT(*) FROM {pq} WHERE ANOMALY_GROUP IS NULL").fetchone()[0]
+print(f"\n  ANOMALY_TYPE NULLs preserved in parquet: {null_pq:,} (raw: {null_counts['ANOMALY_TYPE']:,}); "
+      f"ANOMALY_GROUP = 'UNLABELLED': {grp_unl:,}; ANOMALY_GROUP NULLs: {grp_null}")
+assert null_pq == null_counts["ANOMALY_TYPE"] == grp_unl and grp_null == 0
 exact_flag = con.execute(f"SELECT COUNT(*) FROM {pq} WHERE is_exact_dup").fetchone()[0]
 assert exact_flag == dup_extra
 # Anomaly preservation: label counts parquet == raw
-raw_anom = {(a if a is not None else "NORMAL"): n for a, n in con.execute(
+raw_anom = {(a if a is not None else "UNLABELLED"): n for a, n in con.execute(
     "SELECT ANOMALY_TYPE, COUNT(*) FROM raw GROUP BY 1").fetchall()}
 assert raw_anom == anom_clean, "Anomaly label counts differ between raw and parquet"
 print("\n  Anomaly label counts identical in raw CSV and parquet: OK")
@@ -314,7 +324,7 @@ log("\n## Summary of issues\n")
 log("| # | Issue | Rows affected | Decision |")
 log("| :-- | :-- | --: | :-- |")
 log(f"| 1 | Undocumented `DISCLAIMER` column (multi-line text) | {disc_nonnull:,} non-null | Isolated and excluded from parquet; no column shift |")
-log(f"| 2 | `ANOMALY_TYPE` is NULL for normal traffic | {null_counts['ANOMALY_TYPE']:,} | Filled with `'NORMAL'` |")
+log(f"| 2 | `ANOMALY_TYPE` is NULL when a row carries no ground-truth label | {null_counts['ANOMALY_TYPE']:,} | NULLs preserved in `ANOMALY_TYPE`; new column `ANOMALY_GROUP` = `COALESCE(ANOMALY_TYPE,'UNLABELLED')` |")
 log(f"| 3 | Label `CUSTOMER_RECALL` not listed in the schema reference | {anom_clean.get('CUSTOMER_RECALL',0):,} | Kept; `is_anomaly=True`; flagged for team |")
 log(f"| 4 | Exact duplicate rows (all 20 data cols) | {dup_extra:,} surplus ({cand:,} in groups) | Flagged `is_exact_dup`; none dropped |")
 log(f"| 5 | `DUPLICATE_PAYMENT` labels vs exact duplicates | {dp_total:,} labelled / {dp_exact:,} byte-identical | See section below |")
@@ -322,7 +332,7 @@ log(f"| 6 | USD_AMOUNT <= 0 | {neg:,} | None found; no action |" if neg == 0 els
 log(f"| 7 | Invalid CURRENCY_CODE (not 3 uppercase letters / NULL) | {cur_bad:,} | {'None' if cur_bad==0 else 'Preserved'} |")
 log(f"| 8 | BIC8 length != 8 / NULL | {bic_bad:,} | {'None' if bic_bad==0 else 'Preserved'} |")
 log(f"| 9 | Numeric cast failures | {sum(cast_fail.values()):,} | None - zero silent coercion |")
-log(f"| 10 | Leading-zero BIC8 (e.g. `{smp[0] if smp else ''}`) | {lz:,} (ordering side) | Kept as VARCHAR; hash-verified vs raw |")
+log(f"| 10 | Leading-zero BIC8 (pattern `{smp[0] if smp else ''}`; N = digit, X = letter) | {lz:,} (ordering side) | Kept as VARCHAR; hash-verified vs raw |")
 log(f"| 11 | Incomplete paths (`...` in BIC8_PATH) | {path_gap:,} | Kept; `CONTINUITY_QFLAG='N'` rows = {qn:,}; disagreements = {gap_vs_flag:,} |")
 log("\n## 1. `DISCLAIMER` column\n")
 log(f"Only {disc_nonnull:,} of {raw_n:,} rows carry a value (row_id {', '.join(str(r) for r,_ in disc)}). Full text:\n")
@@ -333,24 +343,25 @@ log("\n## 2. Null counts per raw column\n")
 log("| Column | NULL | Empty string |\n| :-- | --: | --: |")
 for c in raw_cols:
     log(f"| {c} | {null_counts[c]:,} | {empty_counts[c]:,} |")
-log("\n## 3. `ANOMALY_TYPE` distribution (after cleaning)\n")
-log("| ANOMALY_TYPE | Rows | % |\n| :-- | --: | --: |")
-for v, n in vc("ANOMALY_TYPE", pq):
+log("\n## 3. `ANOMALY_GROUP` distribution (`ANOMALY_TYPE` with NULL shown as UNLABELLED)\n")
+log("`UNLABELLED` means no ground-truth label. It is *presumed* normal traffic, but it may contain anomalies that were never labelled (e.g. extreme amounts, Section 5).\n")
+log("| ANOMALY_GROUP | Rows | % |\n| :-- | --: | --: |")
+for v, n in vc("ANOMALY_GROUP", pq):
     log(f"| {v} | {n:,} | {n/pn:.4%} |")
 log("\n`CUSTOMER_RECALL` is present in the data but absent from the challenge schema notes; it is preserved as an anomaly label.")
 log("\n## 4. Exact duplicates vs `DUPLICATE_PAYMENT`\n")
 log(f"Duplicates are defined on all 20 data columns (including `ANOMALY_TYPE`) using an md5 key, verified collision-free by a full-tuple GROUP BY ({full_groups:,} groups). First occurrence is kept as `is_exact_dup=False`; later copies are `True`.\n")
 log("| ANOMALY_TYPE | Rows in dup group | Surplus (is_exact_dup) | Total |\n| :-- | --: | --: | --: |")
 for a, g, s, n in xt:
-    log(f"| {a if a!='<NULL>' else 'NORMAL'} | {g:,} | {s:,} | {n:,} |")
+    log(f"| {a if a!='<NULL>' else 'UNLABELLED'} | {g:,} | {s:,} | {n:,} |")
 log(f"\n**Finding:** {dp_exact:,} of {dp_total:,} `DUPLICATE_PAYMENT` rows are byte-identical to an earlier row. "
     f"{unl_dup:,} unlabelled rows are exact duplicates of an earlier row. Because duplicate detection includes `ANOMALY_TYPE`, a labelled row can only match another row carrying the same label; near-duplicates (e.g. same payment with a different timestamp) are for later analysis.")
 log("\n## 5. Extreme amounts vs `FAT_FINGER_MISTAKE`\n")
-log(f"NORMAL-row quantiles: p50={q[0]:,.2f}, p99={q[1]:,.2f}, p99.9={q[2]:,.2f}, p99.99={q[3]:,.2f}.\n")
+log(f"UNLABELLED-row quantiles: p50={q[0]:,.2f}, p99={q[1]:,.2f}, p99.9={q[2]:,.2f}, p99.99={q[3]:,.2f}.\n")
 log("| Label | Rows | Min | Median | Max |\n| :-- | --: | --: | --: | --: |")
 for a, n, mn, md, mx in per_lab:
-    log(f"| {a if a!='<NULL>' else 'NORMAL'} | {n:,} | {mn:,.2f} | {md:,.2f} | {mx:,.2f} |")
-log(f"\nRows above the NORMAL p99.99 ({thr:,.2f}) by label: " + "; ".join(f"{a if a!='<NULL>' else 'NORMAL'}={n:,}" for a, n in ext) + ". No row removed.")
+    log(f"| {a if a!='<NULL>' else 'UNLABELLED'} | {n:,} | {mn:,.2f} | {md:,.2f} | {mx:,.2f} |")
+log(f"\nRows above the UNLABELLED p99.99 ({thr:,.2f}) by label: " + "; ".join(f"{a if a!='<NULL>' else 'UNLABELLED'}={n:,}" for a, n in ext) + ". No row removed.")
 log("\n## 6. Other structural checks\n")
 log(f"- USD_AMOUNT <= 0: {neg:,} (negative {neg_only:,}, zero {zero:,}); NULL: {nul_amt:,}")
 log(f"- TOTAL_DURATION < 0: {dur_neg:,}")
@@ -370,7 +381,9 @@ for k, v in [("row_id", "1-based file order of raw row"), ("utc_dt", "UTC timest
              ("utc_hour", "0-23"), ("utc_dow", "0=Mon..6=Sun"), ("is_weekend", "Sat/Sun (UTC)"),
              ("party_pair", "ORDERING_TYPE + '2' + BENEFICIARY_TYPE"),
              ("ordering_country / beneficiary_country", "chars 5-6 of the BIC8"),
-             ("is_anomaly", "raw ANOMALY_TYPE was non-null"),
+             ("ANOMALY_TYPE", "original label, NULL where unlabelled (unchanged from the raw CSV)"),
+             ("ANOMALY_GROUP", "COALESCE(ANOMALY_TYPE, 'UNLABELLED'); use for grouping and filtering"),
+             ("is_anomaly", "ANOMALY_TYPE IS NOT NULL"),
              ("is_exact_dup", "row is a 2nd+ copy of an identical earlier row"),
              ("dup_group_size", "number of identical rows sharing this row's content (1 = unique)")]:
     log(f"| `{k}` | {v} |")
@@ -387,7 +400,7 @@ print(f"""  Raw CSV rows                : {raw_n:>12,}
   Numeric cast failures       : {sum(cast_fail.values()):>12,}   (zero silent coercion)
   Parquet == raw checksums    : {'PASS' if chk_ok else 'FAIL'}
   Anomaly labels raw==parquet : PASS
-  Anomalies preserved         : {sum(n for v, n in anom_clean.items() if v != 'NORMAL'):>12,}  ({', '.join(f'{v}={n:,}' for v, n in anom_clean.items() if v != 'NORMAL')})
+  Anomalies preserved         : {sum(n for v, n in anom_clean.items() if v != 'UNLABELLED'):>12,}  ({', '.join(f'{v}={n:,}' for v, n in anom_clean.items() if v != 'UNLABELLED')})
   Exact dup rows flagged      : {dup_extra:>12,}  (0 dropped)
   USD_AMOUNT <= 0             : {neg:>12,}
   BIC8 length != 8            : {bic_bad:>12,}

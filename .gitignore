@@ -280,5 +280,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Automatically generated dashboard outputs
+# Automated dashboard generated outputs
 dashboards/automated/dashboard_output/
+dashboards/automated/generated/
+
+# Automatically generated dashboard outputs
+/dashboard_output/

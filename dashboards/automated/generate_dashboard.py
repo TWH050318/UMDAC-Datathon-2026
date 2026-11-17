@@ -144,12 +144,12 @@ def page2():
     r2=float(v.loc[v.measure.str.contains("R² on test",regex=False),"held_out_value"].iloc[0])
     f2=float(v.loc[v.measure.str.contains("share of test payments within a factor of 2",regex=False),"held_out_value"].iloc[0])
     fig,(a,b)=setup_page(2,"Duration & Continuity","Testing path gaps and bank-dependent processing time",
-        [(f"{r2:.2%}","held-out bank-pair R²"),(f"{f2:.1%}","bank-pair within 2x"),("~5%","estimated gap per link")],
+        [(f"{r2:.2%}", "held-out R² | 76.7% test coverage"),(f"{f2:.1%}","bank-pair within 2x"),("~5%","estimated gap per link")],
         "Observed route-gap probability closely matches 1 - (0.95)^(k-1); payment duration increases with the number of intermediaries.",
         "Independent link-level interruptions offer a simple explanation for missing paths. Bank-specific processing delays can explain much of direct-payment duration on eligible pairs.",
         "98.2% held-out R² covers frequent, eligible bank pairs (~76.7% of test payments); 3-bank additive accuracy is materially weaker (~60.7% within 2x).",
         "continuity_gap_model.csv; duration_by_participants.csv; validation_summary.csv",
-        ["Path gap: observed vs model","Median end-to-end duration"])
+        ["Path gap: observed vs model","Mean and median duration by BIC count"])
     a.plot(gap.k,gap.observed_p_gap*100,"o-",lw=2.2,color=TEAL,label="Observed")
     a.plot(gap.k,gap.model_p_5pct_per_link*100,"--",lw=2,color=BLUE,label="5% per link model")
     a.set_xlabel("Observed BICs (k)");a.set_ylabel("Probability of gap (%)")
@@ -179,7 +179,8 @@ def page3():
     annotate_bars(a,bars,lambda x:f"{x:.0f}%")
     vals=[unseen*100,paths*100]
     bars=b.bar(["Unseen country\npairs","Unseen 3–6\nbank paths"],vals,color=[BLUE,TEAL],width=.52)
-    b.set_ylim(95,101.5);b.set_ylabel("Held-out accuracy (%)")
+    b.set_ylim(0, 105)
+    b.set_ylabel("Held-out accuracy (%)")
     annotate_bars(b,bars,lambda x:f"{x:.2f}%")
     return fig
 
@@ -262,26 +263,81 @@ def page6():
     return fig
 
 
+
 def page7():
-    g="07_Parties_Geography"
-    pr=read(g,"entity_proximity.csv")
-    mix=read(g,"party_flow_mix.csv")
-    close=pr.iloc[1]
-    fig,(a,b)=setup_page(7,"Parties & Geography","Counterparty proximity versus a random comparator",
-        [(f"{close.lift:.2f}x","observed/random, bucket 10–99"),("4 flows","B2B / B2C / C2B / C2C"),("10.0M","payments in flow-mix table")],
-        "Payment counterparties are overrepresented in nearby distance buckets compared with the supplied random-pair baseline.",
-        "Proximity preference may approximate recurring commercial relationships or geographically clustered payment counterparties in the synthetic network.",
-        "Distance-bin units and baseline construction must follow the original analysis; geography in synthetic payments is not necessarily representative of real-world trade.",
-        "entity_proximity.csv; party_flow_mix.csv",["Proximity lift vs random pairing","Payment party-flow mix: observed vs independent"])
-    labels=[str(s).replace("–","-") for s in pr.distance]
-    bars=a.bar(labels,pr.lift,color=[TEAL]*4+[BLUE]*2)
-    a.axhline(1,color=GOLD,ls="--",lw=1.6)
-    a.set_ylabel("Lift (observed/random)");a.tick_params(axis="x",labelrotation=18)
-    a.set_ylim(0,5.5)
-    flow=(mix.o+"2"+mix.b).tolist();xx=np.arange(4);w=.33
-    b.bar(xx-w/2,mix.share*100,width=w,color=TEAL,label="Observed")
-    b.bar(xx+w/2,mix.expected_if_independent*100,width=w,color=BLUE,label="Independent baseline")
-    b.set_xticks(xx,flow);b.set_ylabel("Share of payments (%)");b.legend(fontsize=8,frameon=False)
+    g = "07_Parties_Geography"
+    pr = read(g, "entity_proximity.csv")
+    mix = read(g, "party_flow_mix.csv")
+
+    close = pr.iloc[1]
+
+    fig, (a, b) = setup_page(
+        7,
+        "Customer Identifier Proximity",
+        "Customer-number differences versus random assignment",
+        [
+            (f"{close.lift:.2f}x", "lift for ID differences of 10–99"),
+            ("2.98M", "payments with both accounts IBAN-style"),
+            ("4 flows", "B2B / B2C / C2B / C2C")
+        ],
+        "Payments with numerically similar sender and receiver "
+        "customer IDs occur more often than expected under "
+        "random receiver assignment.",
+        "The pattern may reflect customer-number assignment or "
+        "synthetic community generation. It does not establish "
+        "physical geographical proximity.",
+        "Customer-ID proximity was analysed on 2,978,599 payments "
+        "with both accounts IBAN-style. Identifier assignment "
+        "may explain the observed association.",
+        "entity_proximity.csv; party_flow_mix.csv",
+        [
+            "Customer-number proximity vs random",
+            "Party-flow mix: observed vs independent (all 10M)"
+        ]
+    )
+
+    labels = [
+        "<10", "10–99", "100–999",
+        "1k–10k", "10k–100k", "100k+"
+    ]
+
+    x = np.arange(len(labels))
+
+    a.bar(
+        x,
+        pr.lift,
+        color=[TEAL] * 4 + [BLUE] * 2
+    )
+
+    a.axhline(1, color=GOLD, ls="--", lw=1.6)
+    a.set_xticks(x, labels, rotation=18, ha="right")
+    a.set_ylabel("Lift (observed / random)")
+    a.set_ylim(0, 5.5)
+
+    flow = (mix.o + "2" + mix.b).tolist()
+    xx = np.arange(len(flow))
+    w = 0.33
+
+    b.bar(
+        xx - w / 2,
+        mix.share * 100,
+        width=w,
+        color=TEAL,
+        label="Observed"
+    )
+
+    b.bar(
+        xx + w / 2,
+        mix.expected_if_independent * 100,
+        width=w,
+        color=BLUE,
+        label="Independent baseline"
+    )
+
+    b.set_xticks(xx, flow)
+    b.set_ylabel("Share of payments (%)")
+    b.legend(fontsize=8, frameon=False)
+
     return fig
 
 
@@ -305,6 +361,18 @@ def page8():
     b.set_xlabel("Copies per cluster");b.set_ylabel("Number of clusters")
     c.plot(romance.step,romance.median_rel_amount,"o-",color=TEAL,lw=2)
     c.set_xlabel("Payment sequence step");c.set_ylabel("Median amount / first")
+    
+    # Show how the romance-scam sample size decreases by sequence step
+    c.text(
+        0.04, 0.94,
+        "n = 500 at step 1; 69 at step 8",
+        transform=c.transAxes,
+        fontsize=7.5,
+        color=MUTED,
+        ha="left",
+        va="top"
+    )
+
     c.set_yscale("log");c.set_yticks([1,2,4,8,16]);c.get_yaxis().set_major_formatter(FuncFormatter(lambda v,pos:f"{v:g}x"))
     return fig
 

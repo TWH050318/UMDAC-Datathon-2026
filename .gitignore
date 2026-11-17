@@ -279,3 +279,6 @@ __pycache__/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Automatically generated dashboard outputs
+dashboards/automated/dashboard_output/

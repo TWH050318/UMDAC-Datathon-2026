@@ -1,0 +1,305 @@
+{
+  "input_file": "swift_sample.csv",
+  "rows": 5000,
+  "columns": [
+    "DISCLAIMER",
+    "EPOCH_SECONDS",
+    "CURRENCY_CODE",
+    "USD_AMOUNT",
+    "ORDERING_BIC8",
+    "BENEFICIARY_BIC8",
+    "BIC8_PATH",
+    "TOTAL_DURATION",
+    "CONTINUITY_QFLAG",
+    "CURRENCY_CONVERSION_COUNT",
+    "PARTICIPANT_COUNT",
+    "TRANSACTION_TYPE_CODE",
+    "ORDERING_ACCOUNT",
+    "BENEFICIARY_ACCOUNT",
+    "ORDERING_DETAILS",
+    "ORDERING_TOKENS",
+    "BENEFICIARY_DETAILS",
+    "BENEFICIARY_TOKENS",
+    "ORDERING_TYPE",
+    "BENEFICIARY_TYPE",
+    "ANOMALY_TYPE"
+  ],
+  "missing_expected_columns": [],
+  "extra_columns": [
+    "DISCLAIMER (metadata column)"
+  ],
+  "blank_values": {
+    "DISCLAIMER": 5000,
+    "EPOCH_SECONDS": 0,
+    "CURRENCY_CODE": 0,
+    "USD_AMOUNT": 0,
+    "ORDERING_BIC8": 0,
+    "BENEFICIARY_BIC8": 0,
+    "BIC8_PATH": 0,
+    "TOTAL_DURATION": 0,
+    "CONTINUITY_QFLAG": 0,
+    "CURRENCY_CONVERSION_COUNT": 0,
+    "PARTICIPANT_COUNT": 0,
+    "TRANSACTION_TYPE_CODE": 0,
+    "ORDERING_ACCOUNT": 0,
+    "BENEFICIARY_ACCOUNT": 0,
+    "ORDERING_DETAILS": 0,
+    "ORDERING_TOKENS": 0,
+    "BENEFICIARY_DETAILS": 0,
+    "BENEFICIARY_TOKENS": 0,
+    "ORDERING_TYPE": 0,
+    "BENEFICIARY_TYPE": 0,
+    "ANOMALY_TYPE": 4998
+  },
+  "invalid_numeric_nonblank": {
+    "EPOCH_SECONDS": 0,
+    "USD_AMOUNT": 0,
+    "TOTAL_DURATION": 0,
+    "CURRENCY_CONVERSION_COUNT": 0,
+    "PARTICIPANT_COUNT": 0
+  },
+  "numeric_stats": {
+    "EPOCH_SECONDS": {
+      "count": 5000,
+      "sum": 8434426239268.0,
+      "min": 1682880918.0,
+      "max": 1690762843.0
+    },
+    "USD_AMOUNT": {
+      "count": 5000,
+      "sum": 364288169.41,
+      "min": 0.07,
+      "max": 29133006.47
+    },
+    "TOTAL_DURATION": {
+      "count": 5000,
+      "sum": 3782947.0,
+      "min": 2.0,
+      "max": 11070.0
+    },
+    "CURRENCY_CONVERSION_COUNT": {
+      "count": 5000,
+      "sum": 6587.0,
+      "min": 0.0,
+      "max": 8.0
+    },
+    "PARTICIPANT_COUNT": {
+      "count": 5000,
+      "sum": 12739.0,
+      "min": 2.0,
+      "max": 10.0
+    }
+  },
+  "approx_quantiles": {
+    "USD_AMOUNT": {
+      "approx_median": 3612.075,
+      "approx_p90": 90569.38500000014,
+      "approx_p99": 1063146.7384000064
+    },
+    "TOTAL_DURATION": {
+      "approx_median": 53.0,
+      "approx_p90": 2497.2000000000007,
+      "approx_p99": 5285.01
+    },
+    "PARTICIPANT_COUNT": {
+      "approx_median": 2.0,
+      "approx_p90": 4.0,
+      "approx_p99": 6.0
+    },
+    "CURRENCY_CONVERSION_COUNT": {
+      "approx_median": 1.0,
+      "approx_p90": 2.0,
+      "approx_p99": 4.0
+    }
+  },
+  "category_counts": {
+    "CURRENCY_CODE": {
+      "EUR": 1624,
+      "USD": 804,
+      "GBP": 439,
+      "CHF": 407,
+      "CNY": 173,
+      "SGD": 155,
+      "JPY": 98,
+      "AUD": 90,
+      "HKD": 88,
+      "SAR": 60,
+      "KRW": 55,
+      "CAD": 55,
+      "AED": 55,
+      "DKK": 46,
+      "UAH": 38,
+      "INR": 32,
+      "PAB": 32,
+      "RUB": 30,
+      "MYR": 30,
+      "KYD": 29,
+      "ILS": 27,
+      "ZAR": 26,
+      "QAR": 24,
+      "TRY": 23,
+      "PLN": 22,
+      "TWD": 20,
+      "CLP": 19,
+      "VND": 19,
+      "ARS": 18,
+      "HUF": 18,
+      "BHD": 18,
+      "CZK": 17,
+      "COP": 16,
+      "NOK": 16,
+      "SEK": 16,
+      "MUR": 14,
+      "XOF": 14,
+      "BRL": 13,
+      "BWP": 13,
+      "KZT": 13,
+      "LAK": 13,
+      "ALL": 12,
+      "KWD": 11,
+      "NZD": 11,
+      "BBD": 11,
+      "BSD": 9,
+      "LBP": 9,
+      "KHR": 8,
+      "BGN": 8,
+      "MXN": 8,
+      "GTQ": 8,
+      "ANG": 8,
+      "BDT": 7,
+      "XCD": 7,
+      "MMK": 7,
+      "LKR": 6,
+      "IQD": 6,
+      "AOA": 6,
+      "RON": 6,
+      "PHP": 6,
+      "PEN": 6,
+      "BMD": 5,
+      "XPF": 5,
+      "IDR": 5,
+      "EGP": 5,
+      "UGX": 4,
+      "TND": 4,
+      "DOP": 4,
+      "SDG": 4,
+      "THB": 4,
+      "MDL": 4,
+      "RWF": 3,
+      "UYU": 3,
+      "ISK": 3,
+      "DZD": 3,
+      "MOP": 3,
+      "MNT": 3,
+      "MAD": 3,
+      "CRC": 3,
+      "OMR": 2,
+      "LYD": 2,
+      "PYG": 2,
+      "JOD": 2,
+      "GYD": 2,
+      "BYN": 2,
+      "SRD": 2,
+      "XAF": 2,
+      "NGN": 2,
+      "MKD": 2,
+      "RSD": 2,
+      "GEL": 1,
+      "NAD": 1,
+      "SHP": 1,
+      "JMD": 1,
+      "BTN": 1,
+      "SLL": 1,
+      "KES": 1,
+      "MZN": 1,
+      "ZMW": 1,
+      "VES": 1,
+      "HTG": 1,
+      "ZWL": 1,
+      "AZN": 1,
+      "AWG": 1,
+      "CUP": 1,
+      "NIO": 1,
+      "BAM": 1,
+      "AMD": 1,
+      "SSP": 1,
+      "KGS": 1,
+      "SCR": 1,
+      "CDF": 1,
+      "GIP": 1,
+      "GHS": 1,
+      "BND": 1,
+      "SYP": 1,
+      "CVE": 1,
+      "PGK": 1,
+      "TOP": 1,
+      "DJF": 1,
+      "GNF": 1
+    },
+    "TRANSACTION_TYPE_CODE": {
+      "Direct": 3232,
+      "Indirect": 1580,
+      "Covered": 188
+    },
+    "CONTINUITY_QFLAG": {
+      "Y": 4645,
+      "N": 355
+    },
+    "ORDERING_TYPE": {
+      "B": 3931,
+      "C": 1069
+    },
+    "BENEFICIARY_TYPE": {
+      "C": 3558,
+      "B": 1442
+    },
+    "ANOMALY_TYPE": {
+      "<BLANK / UNLABELLED>": 4998,
+      "ACCOUNT_REPLACEMENT_SCAM": 1,
+      "ROMANCE_SCAM": 1
+    }
+  },
+  "structural_checks": {
+    "ORDERING_BIC8_8_alphanumeric": {
+      "tested": 5000,
+      "matched": 5000
+    },
+    "BENEFICIARY_BIC8_8_alphanumeric": {
+      "tested": 5000,
+      "matched": 5000
+    },
+    "participant_count_equals_observed_bics": {
+      "tested": 5000,
+      "matched": 5000
+    },
+    "direct_type_iff_two_participants_candidate": {
+      "tested": 5000,
+      "matched": 5000
+    },
+    "fx_count_between_zero_and_participants_minus_one_candidate": {
+      "tested": 5000,
+      "matched": 5000
+    },
+    "continuity_N_iff_path_contains_gap_candidate": {
+      "tested": 5000,
+      "matched": 5000
+    },
+    "first_observed_bic_matches_ordering_bic": {
+      "tested": 5000,
+      "matched": 4735
+    },
+    "last_observed_bic_matches_beneficiary_bic": {
+      "tested": 5000,
+      "matched": 4776
+    }
+  },
+  "review_flags": {
+    "nonpositive_usd_amount_review": 0,
+    "negative_duration_review": 0,
+    "nonpositive_participant_count_review": 0,
+    "negative_fx_count_review": 0,
+    "paths_with_gap_placeholder": 355,
+    "paths_without_gap_placeholder": 4645,
+    "paths_with_non_bic_tokens_review": 0
+  }
+}

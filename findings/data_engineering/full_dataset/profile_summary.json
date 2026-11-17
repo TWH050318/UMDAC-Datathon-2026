@@ -1,0 +1,343 @@
+{
+  "input_file": "swift_umdac_datathon_2026_fictitious_payment_data.csv",
+  "rows": 10000000,
+  "columns": [
+    "DISCLAIMER",
+    "EPOCH_SECONDS",
+    "CURRENCY_CODE",
+    "USD_AMOUNT",
+    "ORDERING_BIC8",
+    "BENEFICIARY_BIC8",
+    "BIC8_PATH",
+    "TOTAL_DURATION",
+    "CONTINUITY_QFLAG",
+    "CURRENCY_CONVERSION_COUNT",
+    "PARTICIPANT_COUNT",
+    "TRANSACTION_TYPE_CODE",
+    "ORDERING_ACCOUNT",
+    "BENEFICIARY_ACCOUNT",
+    "ORDERING_DETAILS",
+    "ORDERING_TOKENS",
+    "BENEFICIARY_DETAILS",
+    "BENEFICIARY_TOKENS",
+    "ORDERING_TYPE",
+    "BENEFICIARY_TYPE",
+    "ANOMALY_TYPE"
+  ],
+  "missing_expected_columns": [],
+  "extra_columns": [
+    "DISCLAIMER (metadata column)"
+  ],
+  "blank_values": {
+    "DISCLAIMER": 9999999,
+    "EPOCH_SECONDS": 0,
+    "CURRENCY_CODE": 0,
+    "USD_AMOUNT": 0,
+    "ORDERING_BIC8": 0,
+    "BENEFICIARY_BIC8": 0,
+    "BIC8_PATH": 0,
+    "TOTAL_DURATION": 0,
+    "CONTINUITY_QFLAG": 0,
+    "CURRENCY_CONVERSION_COUNT": 0,
+    "PARTICIPANT_COUNT": 0,
+    "TRANSACTION_TYPE_CODE": 0,
+    "ORDERING_ACCOUNT": 0,
+    "BENEFICIARY_ACCOUNT": 0,
+    "ORDERING_DETAILS": 0,
+    "ORDERING_TOKENS": 0,
+    "BENEFICIARY_DETAILS": 0,
+    "BENEFICIARY_TOKENS": 0,
+    "ORDERING_TYPE": 0,
+    "BENEFICIARY_TYPE": 0,
+    "ANOMALY_TYPE": 9992994
+  },
+  "invalid_numeric_nonblank": {
+    "EPOCH_SECONDS": 0,
+    "USD_AMOUNT": 0,
+    "TOTAL_DURATION": 0,
+    "CURRENCY_CONVERSION_COUNT": 0,
+    "PARTICIPANT_COUNT": 0
+  },
+  "numeric_stats": {
+    "EPOCH_SECONDS": {
+      "count": 10000000,
+      "sum": 1.6869273737817292e+16,
+      "min": 1682853746.0,
+      "max": 1690797361.0
+    },
+    "USD_AMOUNT": {
+      "count": 10000000,
+      "sum": 972041020382.0902,
+      "min": 0.01,
+      "max": 15664132213.09
+    },
+    "TOTAL_DURATION": {
+      "count": 10000000,
+      "sum": 7715102084.0,
+      "min": 2.0,
+      "max": 21649.0
+    },
+    "CURRENCY_CONVERSION_COUNT": {
+      "count": 10000000,
+      "sum": 13430237.0,
+      "min": 0.0,
+      "max": 17.0
+    },
+    "PARTICIPANT_COUNT": {
+      "count": 10000000,
+      "sum": 25815715.0,
+      "min": 2.0,
+      "max": 22.0
+    }
+  },
+  "approx_quantiles": {
+    "USD_AMOUNT": {
+      "approx_median": 3360.4049999999997,
+      "approx_p90": 89290.00600000005,
+      "approx_p99": 1226665.1650000007
+    },
+    "TOTAL_DURATION": {
+      "approx_median": 59.0,
+      "approx_p90": 2590.0,
+      "approx_p99": 5396.200000000004
+    },
+    "PARTICIPANT_COUNT": {
+      "approx_median": 2.0,
+      "approx_p90": 4.0,
+      "approx_p99": 6.0
+    },
+    "CURRENCY_CONVERSION_COUNT": {
+      "approx_median": 1.0,
+      "approx_p90": 3.0,
+      "approx_p99": 5.0
+    }
+  },
+  "category_counts": {
+    "CURRENCY_CODE": {
+      "EUR": 3198639,
+      "USD": 1702991,
+      "GBP": 873781,
+      "CHF": 803898,
+      "SGD": 367648,
+      "CNY": 324963,
+      "HKD": 197458,
+      "JPY": 184251,
+      "AUD": 166877,
+      "CAD": 111146,
+      "AED": 97143,
+      "KRW": 108765,
+      "SAR": 97116,
+      "UAH": 69006,
+      "DKK": 63387,
+      "PAB": 61600,
+      "MYR": 54058,
+      "RUB": 65105,
+      "QAR": 59848,
+      "TRY": 55351,
+      "ILS": 49045,
+      "INR": 51163,
+      "ARS": 46494,
+      "ZAR": 44481,
+      "KYD": 41531,
+      "VND": 29570,
+      "BHD": 35322,
+      "SEK": 32872,
+      "TWD": 38116,
+      "CZK": 39013,
+      "HUF": 34676,
+      "PLN": 40386,
+      "COP": 28670,
+      "NZD": 28879,
+      "RON": 29348,
+      "BSD": 31971,
+      "XOF": 25887,
+      "ALL": 24281,
+      "BWP": 27278,
+      "CLP": 27854,
+      "MXN": 18883,
+      "MUR": 22811,
+      "BRL": 20131,
+      "BBD": 24350,
+      "KZT": 22494,
+      "BDT": 21979,
+      "KWD": 18195,
+      "XCD": 20152,
+      "NOK": 21256,
+      "KHR": 11798,
+      "LBP": 13795,
+      "GTQ": 15047,
+      "PYG": 12431,
+      "THB": 9729,
+      "ANG": 12089,
+      "MOP": 13099,
+      "IQD": 11844,
+      "ISK": 9634,
+      "LKR": 14505,
+      "DZD": 8154,
+      "BMD": 8877,
+      "IDR": 10510,
+      "LAK": 7560,
+      "NGN": 8566,
+      "BGN": 9649,
+      "LYD": 4877,
+      "PHP": 8637,
+      "PEN": 7934,
+      "UGX": 9666,
+      "OMR": 6799,
+      "JOD": 7130,
+      "DOP": 8537,
+      "BAM": 3775,
+      "EGP": 9282,
+      "MNT": 5167,
+      "KES": 4031,
+      "XPF": 6968,
+      "PGK": 5751,
+      "UZS": 4481,
+      "AZN": 4236,
+      "UYU": 6083,
+      "AWG": 4752,
+      "AOA": 6916,
+      "XAF": 5278,
+      "TND": 5904,
+      "CVE": 4118,
+      "MKD": 3506,
+      "MVR": 3018,
+      "BYN": 4583,
+      "FJD": 3415,
+      "RWF": 4198,
+      "TZS": 1870,
+      "ZWL": 4189,
+      "RSD": 3210,
+      "YER": 4110,
+      "AMD": 3941,
+      "MAD": 3866,
+      "PKR": 2770,
+      "MMK": 6890,
+      "GHS": 5035,
+      "HNL": 3754,
+      "NAD": 4489,
+      "CRC": 3695,
+      "ETB": 2739,
+      "BND": 1874,
+      "SSP": 2286,
+      "BZD": 3072,
+      "TJS": 3515,
+      "GYD": 1301,
+      "IRR": 1584,
+      "BTN": 1587,
+      "NIO": 2446,
+      "CUP": 3014,
+      "GNF": 3607,
+      "NPR": 1083,
+      "VES": 2496,
+      "MDL": 1953,
+      "SRD": 1803,
+      "CDF": 1766,
+      "TTD": 556,
+      "SDG": 3158,
+      "MRU": 1807,
+      "TOP": 2390,
+      "KGS": 1515,
+      "SYP": 1707,
+      "GEL": 2645,
+      "TMT": 1392,
+      "ZMW": 872,
+      "SLL": 2007,
+      "BOB": 1336,
+      "BIF": 639,
+      "KMF": 466,
+      "AFN": 697,
+      "GIP": 493,
+      "GMD": 506,
+      "MZN": 890,
+      "JMD": 442,
+      "SHP": 563,
+      "DJF": 1043,
+      "MWK": 354,
+      "SBD": 1006,
+      "VUV": 696,
+      "KPW": 303,
+      "LRD": 516,
+      "STN": 104,
+      "SZL": 303,
+      "WST": 62,
+      "SCR": 170,
+      "MGA": 203,
+      "HTG": 237,
+      "SOS": 217,
+      "LSL": 288,
+      "SVC": 4,
+      "ERN": 15,
+      "FKP": 5
+    },
+    "TRANSACTION_TYPE_CODE": {
+      "Direct": 6323280,
+      "Indirect": 3260758,
+      "Covered": 415962
+    },
+    "CONTINUITY_QFLAG": {
+      "Y": 9232796,
+      "N": 767204
+    },
+    "ORDERING_TYPE": {
+      "B": 7874637,
+      "C": 2125363
+    },
+    "BENEFICIARY_TYPE": {
+      "C": 7118450,
+      "B": 2881550
+    },
+    "ANOMALY_TYPE": {
+      "<BLANK / UNLABELLED>": 9992994,
+      "ROMANCE_SCAM": 2476,
+      "FAT_FINGER_MISTAKE": 1940,
+      "ACCOUNT_REPLACEMENT_SCAM": 649,
+      "CEO_SCAM": 945,
+      "DUPLICATE_PAYMENT": 679,
+      "CUSTOMER_RECALL": 317
+    }
+  },
+  "structural_checks": {
+    "ORDERING_BIC8_8_alphanumeric": {
+      "tested": 10000000,
+      "matched": 10000000
+    },
+    "BENEFICIARY_BIC8_8_alphanumeric": {
+      "tested": 10000000,
+      "matched": 10000000
+    },
+    "participant_count_equals_observed_bics": {
+      "tested": 10000000,
+      "matched": 10000000
+    },
+    "direct_type_iff_two_participants_candidate": {
+      "tested": 10000000,
+      "matched": 10000000
+    },
+    "fx_count_between_zero_and_participants_minus_one_candidate": {
+      "tested": 10000000,
+      "matched": 10000000
+    },
+    "continuity_N_iff_path_contains_gap_candidate": {
+      "tested": 10000000,
+      "matched": 10000000
+    },
+    "first_observed_bic_matches_ordering_bic": {
+      "tested": 10000000,
+      "matched": 9501601
+    },
+    "last_observed_bic_matches_beneficiary_bic": {
+      "tested": 10000000,
+      "matched": 9500735
+    }
+  },
+  "review_flags": {
+    "nonpositive_usd_amount_review": 0,
+    "negative_duration_review": 0,
+    "nonpositive_participant_count_review": 0,
+    "negative_fx_count_review": 0,
+    "paths_with_gap_placeholder": 767204,
+    "paths_without_gap_placeholder": 9232796,
+    "paths_with_non_bic_tokens_review": 0
+  }
+}
